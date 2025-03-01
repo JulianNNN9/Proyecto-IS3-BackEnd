@@ -4,7 +4,6 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Document("usuarios")
 @NoArgsConstructor
@@ -25,7 +24,9 @@ public class Usuario {
     private String email;
     private String contrasenia;
     private Rol rol;
-    private LocalDateTime fechaRegistro;
+    private EstadoUsuario estadoUsuario;
+    private CodigoActivacion codigoActivacion;
+    private CodigoRecuperacion codigoRecuperacion;
     private int fallosInicioSesion;
     private LocalDateTime tiempoBloqueo;
 }
