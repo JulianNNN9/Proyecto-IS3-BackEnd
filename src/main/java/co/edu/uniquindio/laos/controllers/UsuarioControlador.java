@@ -15,7 +15,6 @@ public class UsuarioControlador {
     /*
     private final UsuarioService usuarioService;
     private final CompraService compraService;
-    private final CarritoService carritoService;
      */
 
 }
