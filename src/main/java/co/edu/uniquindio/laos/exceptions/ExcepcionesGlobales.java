@@ -1,7 +1,7 @@
 package co.edu.uniquindio.laos.exceptions;
 
-import co.edu.uniquindio.unieventos.dto.MensajeDTO;
-import co.edu.uniquindio.unieventos.dto.ValidacionDTO;
+import co.edu.uniquindio.laos.dto.MensajeDTO;
+import co.edu.uniquindio.laos.dto.ValidacionDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
