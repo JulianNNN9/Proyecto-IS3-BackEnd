@@ -1,12 +1,11 @@
 package co.edu.uniquindio.laos.controllers;
 
 import co.edu.uniquindio.laos.dto.MensajeDTO;
-import co.edu.uniquindio.laos.dto.sugerencias.CrearSugerenciaDTO;
-import co.edu.uniquindio.laos.services.interfaces.SugerenciaService;
-import co.edu.uniquindio.laos.services.interfaces.UsuarioService;
+import co.edu.uniquindio.laos.dto.cuenta.EditarUsuarioDTO;
+import co.edu.uniquindio.laos.dto.cuenta.InformacionUsuarioDTO;
 import co.edu.uniquindio.laos.dto.queja.CrearQuejaDTO;
-import co.edu.uniquindio.laos.dto.queja.QuejaDTO;
 import co.edu.uniquindio.laos.model.Queja;
+import co.edu.uniquindio.laos.services.interfaces.UsuarioService;
 import co.edu.uniquindio.laos.services.interfaces.QuejaService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -22,16 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UsuarioControlador {
 
-
     private final UsuarioService usuarioService;
-    private final SugerenciaService sugerenciaService;
-
-    @PostMapping("/crear-sugerencia")
-    public ResponseEntity<MensajeDTO<String>> crearSugerencia(@RequestBody CrearSugerenciaDTO dto) {
-        sugerenciaService.crearSugerencia(dto);
-        return ResponseEntity.ok().body( new MensajeDTO<>(false, "Sugerencia creada correctamente"));
-    }
-
     private final QuejaService quejaService;
 
     @PostMapping("/crear-queja")
@@ -46,4 +36,21 @@ public class UsuarioControlador {
         return ResponseEntity.ok().body(new MensajeDTO<>(false, quejas));
     }
 
+    @PutMapping("/editar-usuario")
+    public ResponseEntity<MensajeDTO<String>> editarUsuario(@Valid @RequestBody EditarUsuarioDTO editarUsuarioDTO) throws Exception {
+        usuarioService.editarUsuario(editarUsuarioDTO);
+        return ResponseEntity.ok().body(new MensajeDTO<>(false, "Usuario editado correctamente"));
+    }
+
+    @DeleteMapping("/eliminar-usuario/{id}")
+    public ResponseEntity<MensajeDTO<String>> eliminarUsuario(@PathVariable String id) throws Exception {
+        usuarioService.eliminarUsuario(id);
+        return ResponseEntity.ok().body(new MensajeDTO<>(false, "Usuario eliminado correctamente"));
+    }
+
+    @GetMapping("/informacion-usuario/{id}")
+    public ResponseEntity<InformacionUsuarioDTO> obtenerInformacionUsuario(@PathVariable String id) throws Exception {
+        InformacionUsuarioDTO informacionUsuario = usuarioService.obtenerInformacionUsuario(id);
+        return ResponseEntity.ok(informacionUsuario);
+    }
 }
