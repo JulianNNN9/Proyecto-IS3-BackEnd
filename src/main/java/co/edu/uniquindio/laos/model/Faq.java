@@ -3,24 +3,18 @@ package co.edu.uniquindio.laos.model;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import java.time.LocalDateTime;
 
-@Document("quejas")
+@Document("faqs")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Queja {
+public class Faq {
 
     @Id
     @EqualsAndHashCode.Include
     private String id;
-
-    private String clienteId;
-    private String descripcion;
-    private LocalDateTime fecha;
-    private EstadoQueja estadoQueja;
-    private String servicioId;
-    private RespuestaQueja respuestaQueja;
+    private String pregunta;
+    private String respuesta;
 }
