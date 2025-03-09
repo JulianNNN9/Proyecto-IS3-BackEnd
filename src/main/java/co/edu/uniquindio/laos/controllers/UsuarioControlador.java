@@ -1,6 +1,10 @@
 package co.edu.uniquindio.laos.controllers;
 
 import co.edu.uniquindio.laos.dto.MensajeDTO;
+import co.edu.uniquindio.laos.dto.sugerencias.CrearSugerenciaDTO;
+import co.edu.uniquindio.laos.dto.sugerencias.SugerenciaDTO;
+import co.edu.uniquindio.laos.services.interfaces.SugerenciaService;
+import co.edu.uniquindio.laos.services.interfaces.UsuarioService;
 import co.edu.uniquindio.laos.dto.queja.CrearQuejaDTO;
 import co.edu.uniquindio.laos.dto.queja.QuejaDTO;
 import co.edu.uniquindio.laos.model.Queja;
@@ -19,10 +23,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UsuarioControlador {
 
-    /*
+
     private final UsuarioService usuarioService;
-    private final CompraService compraService;
-     */
+    private final SugerenciaService sugerenciaService;
+
+    @PostMapping
+    public ResponseEntity<MensajeDTO<String>> crearSugerencia(@RequestBody CrearSugerenciaDTO dto) {
+        sugerenciaService.crearSugerencia(dto);
+        return ResponseEntity.ok().body( new MensajeDTO<>(false, "Sugerencia creada correctamente"));
+    }
 
     private final QuejaService quejaService;
 

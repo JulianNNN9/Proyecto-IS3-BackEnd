@@ -56,7 +56,7 @@ public class UsuarioServiceImple implements UsuarioService {
                 .telefono(crearCuentaDTO.telefono())
                 .email(crearCuentaDTO.email())
                 .rol(Rol.CLIENTE)
-                .estadoUsuario(EstadoUsuario.INACTIVA)
+                .estadoUsuario(EstadoUsuario.INACTIVO)
                 .build();
 
         Usuario usuarioGuardado = usuarioRepo.save(nuevoUsuario);
@@ -64,7 +64,6 @@ public class UsuarioServiceImple implements UsuarioService {
         enviarCodigoActivacionCuenta(crearCuentaDTO.email());
 
         return usuarioGuardado.getId();
-
     }
 
     @Override
@@ -84,7 +83,7 @@ public class UsuarioServiceImple implements UsuarioService {
 
         Usuario usuario = obtenerUsuario(id);
 
-        usuario.setEstadoUsuario(EstadoUsuario.ELIMINADA);
+        usuario.setEstadoUsuario(EstadoUsuario.ELIMINADO);
 
         usuarioRepo.save(usuario);
     }
@@ -205,7 +204,7 @@ public class UsuarioServiceImple implements UsuarioService {
                 id = id.substring(0, 24);
             }
         }
-        Optional<Usuario> optionalUsuario = usuarioRepo.findByIdAndEstadoUsuarioNot(id, EstadoUsuario.ELIMINADA);
+        Optional<Usuario> optionalUsuario = usuarioRepo.findByIdAndEstadoUsuarioNot(id, EstadoUsuario.ELIMINADO);
 
         if(optionalUsuario.isEmpty()){
             throw new RecursoNoEncontradoException("Usuario no encontrado");
@@ -216,7 +215,7 @@ public class UsuarioServiceImple implements UsuarioService {
     @Override
     public Usuario obtenerUsuarioPorEmail(String correo) throws RecursoNoEncontradoException {
 
-        Optional<Usuario> optionalUsuario = usuarioRepo.findByEmailAndEstadoUsuarioNot(correo, EstadoUsuario.ELIMINADA);
+        Optional<Usuario> optionalUsuario = usuarioRepo.findByEmailAndEstadoUsuarioNot(correo, EstadoUsuario.ELIMINADO);
 
         if(optionalUsuario.isEmpty()){
             throw new RecursoNoEncontradoException("Email no encontrado");
@@ -242,7 +241,7 @@ public class UsuarioServiceImple implements UsuarioService {
 
         Usuario usuario = obtenerUsuarioPorEmail(iniciarSesionDTO.email());
 
-        if (usuario.getEstadoUsuario() == EstadoUsuario.INACTIVA){
+        if (usuario.getEstadoUsuario() == EstadoUsuario.INACTIVO){
             throw new CuentaInactivaEliminadaException("Esta cuenta aún no ha sido activada");
         }
 
@@ -273,7 +272,7 @@ public class UsuarioServiceImple implements UsuarioService {
     @Override
     public void activarCuenta(ActivarCuentaDTO activarCuentaDTO) throws Exception {
 
-        Optional<Usuario> usuario = usuarioRepo.findByEmailAndEstadoUsuarioNot(activarCuentaDTO.email(), EstadoUsuario.ELIMINADA);
+        Optional<Usuario> usuario = usuarioRepo.findByEmailAndEstadoUsuarioNot(activarCuentaDTO.email(), EstadoUsuario.ELIMINADO);
         if(usuario.isEmpty()){
             throw new RecursoNoEncontradoException("Error al Activar la Cuenta");
         }
@@ -285,7 +284,7 @@ public class UsuarioServiceImple implements UsuarioService {
             throw new CodigoInvalidoException("El código de activación es incorrecto: " + "Codigo Usuario: " + usuario.get().getCodigoActivacion().getCodigo() + "Codigo Enviado: " + activarCuentaDTO.codigoActivacion());
         }
         Usuario usuarioActivacion = usuario.get();
-        usuarioActivacion.setEstadoUsuario(EstadoUsuario.ACTIVA);
+        usuarioActivacion.setEstadoUsuario(EstadoUsuario.ACTIVO);
 
         usuarioRepo.save(usuarioActivacion);
     }
@@ -293,9 +292,9 @@ public class UsuarioServiceImple implements UsuarioService {
     /*
     METODOS ADICIONALES
      */
-    private boolean existeCedula(String cedula) { return usuarioRepo.findByCedulaAndEstadoUsuarioNot(cedula, EstadoUsuario.ELIMINADA).isPresent(); }
+    private boolean existeCedula(String cedula) { return usuarioRepo.findByCedulaAndEstadoUsuarioNot(cedula, EstadoUsuario.ELIMINADO).isPresent(); }
 
-    private boolean existeEmail(String email) {return usuarioRepo.findByEmailAndEstadoUsuarioNot(email, EstadoUsuario.ELIMINADA).isPresent();}
+    private boolean existeEmail(String email) {return usuarioRepo.findByEmailAndEstadoUsuarioNot(email, EstadoUsuario.ELIMINADO).isPresent();}
 
     private String generarCodigoActivacion(){
 

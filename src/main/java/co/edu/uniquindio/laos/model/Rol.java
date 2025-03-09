@@ -1,3 +1,3 @@
 package co.edu.uniquindio.laos.model;
 
-public enum Rol { CLIENTE, ESTILISTA }
+public enum Rol { CLIENTE, ESTILISTA, ADMIN }
