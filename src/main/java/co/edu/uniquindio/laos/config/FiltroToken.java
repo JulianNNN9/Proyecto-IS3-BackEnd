@@ -65,7 +65,7 @@ public class FiltroToken extends OncePerRequestFilter {
                         crearRespuestaError("No tiene permisos para acceder a este recurso",
                                 HttpServletResponse.SC_FORBIDDEN, response);
                     }
-                }else if (requestURI.startsWith("/api/admin")) {
+                }else if (requestURI.startsWith("/api/estilista")) {
                     if (token != null) {
                         Jws<Claims> jws = jwtUtils.parseJwt(token);
                         if (!jws.getPayload().get("rol").equals("ESTILISTA")) {
@@ -78,7 +78,21 @@ public class FiltroToken extends OncePerRequestFilter {
                         crearRespuestaError("No tiene permisos para acceder a este recurso",
                                 HttpServletResponse.SC_FORBIDDEN, response);
                     }
+                }else if (requestURI.startsWith("/api/admin")) {
+                if (token != null) {
+                    Jws<Claims> jws = jwtUtils.parseJwt(token);
+                    if (!jws.getPayload().get("rol").equals("ADMIN")) {
+                        crearRespuestaError("No tiene permisos para acceder a este recurso",
+                                HttpServletResponse.SC_FORBIDDEN, response);
+                    } else {
+                        error = false;
+                    }
                 } else {
+                    crearRespuestaError("No tiene permisos para acceder a este recurso",
+                            HttpServletResponse.SC_FORBIDDEN, response);
+                }
+            }
+                else {
                     error = false;
                 }
             //Agregar más validaciones para otros roles y recursos (rutas de la API) aquí
