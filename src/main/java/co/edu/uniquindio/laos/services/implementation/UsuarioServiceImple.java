@@ -245,6 +245,10 @@ public class UsuarioServiceImple implements UsuarioService {
             throw new CuentaInactivaEliminadaException("Esta cuenta aún no ha sido activada");
         }
 
+        if (usuario.getEstadoUsuario() == EstadoUsuario.ELIMINADO){
+            throw new CuentaInactivaEliminadaException("Esta cuenta ha sido eliminada");
+        }
+
         //Manejo del bloqueo de cuenta
         if (estaBloqueada(usuario.getEmail())){
             throw new CuentaBloqueadaException("La cuenta se encuentra bloqueada por demasiados intentos, espere 5 minutos");

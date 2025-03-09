@@ -2,7 +2,6 @@ package co.edu.uniquindio.laos.controllers;
 
 import co.edu.uniquindio.laos.dto.MensajeDTO;
 import co.edu.uniquindio.laos.dto.sugerencias.CrearSugerenciaDTO;
-import co.edu.uniquindio.laos.dto.sugerencias.SugerenciaDTO;
 import co.edu.uniquindio.laos.services.interfaces.SugerenciaService;
 import co.edu.uniquindio.laos.services.interfaces.UsuarioService;
 import co.edu.uniquindio.laos.dto.queja.CrearQuejaDTO;
@@ -10,7 +9,6 @@ import co.edu.uniquindio.laos.dto.queja.QuejaDTO;
 import co.edu.uniquindio.laos.model.Queja;
 import co.edu.uniquindio.laos.services.interfaces.QuejaService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +25,7 @@ public class UsuarioControlador {
     private final UsuarioService usuarioService;
     private final SugerenciaService sugerenciaService;
 
-    @PostMapping
+    @PostMapping("/crear-sugerencia")
     public ResponseEntity<MensajeDTO<String>> crearSugerencia(@RequestBody CrearSugerenciaDTO dto) {
         sugerenciaService.crearSugerencia(dto);
         return ResponseEntity.ok().body( new MensajeDTO<>(false, "Sugerencia creada correctamente"));
