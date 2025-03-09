@@ -29,6 +29,7 @@ public class UsuarioControlador {
     private final QuejaService quejaService;
 
     private final SugerenciaService sugerenciaService;
+    private final QuejaService quejaService;
 
     @PostMapping("/crear-sugerencia")
     public ResponseEntity<MensajeDTO<String>> crearSugerencia(@RequestBody CrearSugerenciaDTO dto) {
@@ -42,7 +43,7 @@ public class UsuarioControlador {
         return ResponseEntity.ok().body(new MensajeDTO<>(false, "Queja creada correctamente con ID: " + id));
     }
 
-    @GetMapping("/quejas")
+    @GetMapping("/obtener-quejas")
     public ResponseEntity<MensajeDTO<List<Queja>>> obtenerQuejasPorClienteId(@RequestParam String clienteId) {
         List<Queja> quejas = quejaService.obtenerListaQuejasPorClienteId(clienteId);
         return ResponseEntity.ok().body(new MensajeDTO<>(false, quejas));
