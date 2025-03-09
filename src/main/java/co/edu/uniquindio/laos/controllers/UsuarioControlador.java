@@ -1,8 +1,10 @@
 package co.edu.uniquindio.laos.controllers;
 
 import co.edu.uniquindio.laos.dto.MensajeDTO;
+import co.edu.uniquindio.laos.dto.cuenta.CambiarContraseniaDTO;
 import co.edu.uniquindio.laos.dto.cuenta.EditarUsuarioDTO;
 import co.edu.uniquindio.laos.dto.cuenta.InformacionUsuarioDTO;
+import co.edu.uniquindio.laos.dto.cuenta.RecuperarContraseniaDTO;
 import co.edu.uniquindio.laos.dto.queja.CrearQuejaDTO;
 import co.edu.uniquindio.laos.dto.sugerencias.CrearSugerenciaDTO;
 import co.edu.uniquindio.laos.model.Queja;
@@ -62,5 +64,17 @@ public class UsuarioControlador {
     public ResponseEntity<InformacionUsuarioDTO> obtenerInformacionUsuario(@PathVariable String id) throws Exception {
         InformacionUsuarioDTO informacionUsuario = usuarioService.obtenerInformacionUsuario(id);
         return ResponseEntity.ok(informacionUsuario);
+    }
+
+    @PostMapping("/recuperar-contrasenia")
+    public ResponseEntity<MensajeDTO<String>> recuperarContrasenia(@Valid @RequestBody RecuperarContraseniaDTO recuperarContraseniaDTO) throws Exception {
+        usuarioService.recuperarContrasenia(recuperarContraseniaDTO);
+        return ResponseEntity.ok().body(new MensajeDTO<>(false, "Contraseña recuperada correctamente"));
+    }
+
+    @PutMapping("/cambiar-contrasenia")
+    public ResponseEntity<MensajeDTO<String>> cambiarContrasenia(@Valid @RequestBody CambiarContraseniaDTO cambiarContraseniaDTO) throws Exception {
+        usuarioService.cambiarContrasenia(cambiarContraseniaDTO);
+        return ResponseEntity.ok().body(new MensajeDTO<>(false, "Contraseña cambiada correctamente"));
     }
 }
