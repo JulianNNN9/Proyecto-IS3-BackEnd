@@ -55,8 +55,10 @@ public class UsuarioServiceImple implements UsuarioService {
                 .direccion(crearCuentaDTO.direccion())
                 .telefono(crearCuentaDTO.telefono())
                 .email(crearCuentaDTO.email())
+                .contrasenia(encriptarPassword(crearCuentaDTO.contrasenia()))
                 .rol(Rol.CLIENTE)
                 .estadoUsuario(EstadoUsuario.INACTIVO)
+                .fechaRegistro(LocalDateTime.now())
                 .build();
 
         Usuario usuarioGuardado = usuarioRepo.save(nuevoUsuario);
@@ -64,7 +66,9 @@ public class UsuarioServiceImple implements UsuarioService {
         enviarCodigoActivacionCuenta(crearCuentaDTO.email());
 
         return usuarioGuardado.getId();
+
     }
+
 
     @Override
     public void editarUsuario(EditarUsuarioDTO editarCuentaDTO) throws RecursoNoEncontradoException {

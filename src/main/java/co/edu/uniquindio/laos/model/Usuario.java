@@ -25,6 +25,7 @@ public class Usuario {
     private String contrasenia;
     private Rol rol;
     private EstadoUsuario estadoUsuario;
+    private LocalDateTime fechaRegistro;
     private CodigoActivacion codigoActivacion;
     private CodigoRecuperacion codigoRecuperacion;
     private int fallosInicioSesion;
