@@ -11,6 +11,9 @@ public record QuejaDTO (
         @NotBlank(message = "El clienteId no puede estar vacío")
         String clienteId,
 
+        @NotBlank(message = "El nombre del cliente no puede estar vacío")
+        String nombreCliente,
+
         @NotBlank(message = "La descripción no puede estar vacía")
         String descripcion,
 
@@ -21,7 +24,5 @@ public record QuejaDTO (
         EstadoQueja estadoQueja,
 
         @NotBlank(message = "El servicioId no puede estar vacío")
-        String servicioId,
-
-        RespuestaQueja respuestaQueja
+        String servicioId
 ) {}

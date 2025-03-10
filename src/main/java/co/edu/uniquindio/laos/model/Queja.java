@@ -18,6 +18,7 @@ public class Queja {
     private String id;
 
     private String clienteId;
+    private String nombreCliente;
     private String descripcion;
     private LocalDateTime fecha;
     private EstadoQueja estadoQueja;

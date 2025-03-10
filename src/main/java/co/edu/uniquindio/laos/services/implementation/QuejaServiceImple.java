@@ -24,6 +24,7 @@ public class QuejaServiceImple implements QuejaService {
     public String crearQueja(CrearQuejaDTO crearQuejaDTO) throws Exception {
         Queja queja = Queja.builder()
                 .clienteId(crearQuejaDTO.clienteId())
+                .nombreCliente(crearQuejaDTO.nombreCliente())
                 .descripcion(crearQuejaDTO.descripcion())
                 .fecha(crearQuejaDTO.fecha())
                 .estadoQueja(EstadoQueja.SIN_RESPONDER)
@@ -92,7 +93,7 @@ public class QuejaServiceImple implements QuejaService {
 
     @Override
     public List<Queja> listarQuejas() {
-        return quejaRepo.findAll();
+        return quejaRepo.findByEstadoQueja("SIN_RESPONDER");
     }
 
     @Override
