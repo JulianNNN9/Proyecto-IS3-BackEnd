@@ -24,12 +24,12 @@ public class AdminControlador {
     private final SugerenciaService sugerenciaService;
      private final QuejaService quejaService;
 
-    @GetMapping("/sugerencias")
+    @GetMapping("/obtener-sugerencias")
     public ResponseEntity<MensajeDTO<List<SugerenciaDTO>>> obtenerSugerencias() {
         return ResponseEntity.ok().body(new MensajeDTO<>(false, sugerenciaService.obtenerSugerencias()));
     }
 
-    @GetMapping("/sugerencias/filtrar")
+    @GetMapping("/sugerencias/filtrar-por-fecha")
     public ResponseEntity<MensajeDTO<List<SugerenciaDTO>>> obtenerSugerenciasPorFecha(@RequestParam String fecha) {
         return ResponseEntity.ok().body(new MensajeDTO<>(false, sugerenciaService.obtenerSugerenciasPorFecha(fecha)));
     }
@@ -46,43 +46,43 @@ public class AdminControlador {
         return ResponseEntity.ok().body(new MensajeDTO<>(false, "Queja eliminada correctamente"));
     }
 
-    @GetMapping("/queja/{id}")
+    @GetMapping("/obtener-queja/{id}")
     public ResponseEntity<MensajeDTO<Queja>> obtenerQuejaPorId(@PathVariable String id) throws Exception {
         Queja queja = quejaService.obtenerQuejaPorId(id);
         return ResponseEntity.ok().body(new MensajeDTO<>(false, queja));
     }
 
-    @GetMapping("/quejas/servicio")
+    @GetMapping("/obtener-quejas-por/servicio")
     public ResponseEntity<MensajeDTO<List<Queja>>> obtenerQuejasPorServicioId(@RequestParam String servicioId) {
         List<Queja> quejas = quejaService.obtenerListaQuejasPorServicioId(servicioId);
         return ResponseEntity.ok().body(new MensajeDTO<>(false, quejas));
     }
 
-    @GetMapping("/quejas/cliente")
+    @GetMapping("/obtener-quejas-por/cliente")
     public ResponseEntity<MensajeDTO<List<Queja>>> obtenerQuejasPorClienteId(@RequestParam String clienteId) {
         List<Queja> quejas = quejaService.obtenerListaQuejasPorClienteId(clienteId);
         return ResponseEntity.ok().body(new MensajeDTO<>(false, quejas));
     }
 
-    @GetMapping("/quejas/estado")
+    @GetMapping("/obtener-quejas-por/estado")
     public ResponseEntity<MensajeDTO<List<Queja>>> obtenerQuejasPorEstado(@RequestParam String estadoQueja) {
         List<Queja> quejas = quejaService.obtenerListaQuejasPorEstado(EstadoQueja.valueOf(estadoQueja));
         return ResponseEntity.ok().body(new MensajeDTO<>(false, quejas));
     }
 
-    @GetMapping("/quejas/fecha")
+    @GetMapping("/obtener-quejas-por/fecha")
     public ResponseEntity<MensajeDTO<List<Queja>>> obtenerQuejasPorFecha(@RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate) {
         List<Queja> quejas = quejaService.obtenerListaQuejasPorFecha(startDate, endDate);
         return ResponseEntity.ok().body(new MensajeDTO<>(false, quejas));
     }
 
-    @GetMapping("/quejas/fecha-unica")
+    @GetMapping("/obtener-quejas-por/fecha-unica")
     public ResponseEntity<MensajeDTO<List<Queja>>> obtenerQuejasPorFechaUnica(@RequestParam LocalDateTime fecha) {
         List<Queja> quejas = quejaService.obtenerListaQuejasPorFechaUnica(fecha);
         return ResponseEntity.ok().body(new MensajeDTO<>(false, quejas));
     }
 
-    @GetMapping("/quejas")
+    @GetMapping("/obtener-quejas")
     public ResponseEntity<MensajeDTO<List<Queja>>> listarQuejas() {
         List<Queja> quejas = quejaService.listarQuejas();
         return ResponseEntity.ok().body(new MensajeDTO<>(false, quejas));

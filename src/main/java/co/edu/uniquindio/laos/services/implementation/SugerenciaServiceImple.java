@@ -3,8 +3,11 @@ package co.edu.uniquindio.laos.services.implementation;
 import co.edu.uniquindio.laos.dto.sugerencias.CrearSugerenciaDTO;
 import co.edu.uniquindio.laos.dto.sugerencias.SugerenciaDTO;
 import co.edu.uniquindio.laos.model.Sugerencia;
+import co.edu.uniquindio.laos.model.Usuario;
 import co.edu.uniquindio.laos.repositories.SugerenciaRepository;
+import co.edu.uniquindio.laos.repositories.UsuarioRepo;
 import co.edu.uniquindio.laos.services.interfaces.SugerenciaService;
+import co.edu.uniquindio.laos.services.interfaces.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +23,7 @@ import java.util.stream.Collectors;
 public class SugerenciaServiceImple implements SugerenciaService {
 
     private final SugerenciaRepository sugerenciaRepository;
-
+    private final UsuarioRepo usuarioRepo;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Override
@@ -30,6 +33,7 @@ public class SugerenciaServiceImple implements SugerenciaService {
 
         nuevaSugerencia.setNombre(dto.nombre());
         nuevaSugerencia.setEmail(dto.email());
+        nuevaSugerencia.setMotivo(dto.motivo());
         nuevaSugerencia.setMensaje(dto.mensaje());
         nuevaSugerencia.setFecha(LocalDate.now().format(formatter)); // Fecha actual en String
         nuevaSugerencia.setRevisado(false);
@@ -48,6 +52,7 @@ public class SugerenciaServiceImple implements SugerenciaService {
                         sugerencia.getId(),
                         sugerencia.getNombre(),
                         sugerencia.getEmail(),
+                        sugerencia.getMotivo(),
                         sugerencia.getMensaje(),
                         sugerencia.getFecha(),
                         sugerencia.isRevisado()
@@ -64,6 +69,7 @@ public class SugerenciaServiceImple implements SugerenciaService {
                         sugerencia.getId(),
                         sugerencia.getNombre(),
                         sugerencia.getEmail(),
+                        sugerencia.getMotivo(),
                         sugerencia.getMensaje(),
                         sugerencia.getFecha(),
                         sugerencia.isRevisado()

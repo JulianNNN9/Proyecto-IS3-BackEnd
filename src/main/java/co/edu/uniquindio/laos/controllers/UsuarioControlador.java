@@ -4,7 +4,10 @@ import co.edu.uniquindio.laos.dto.MensajeDTO;
 import co.edu.uniquindio.laos.dto.cuenta.CambiarContraseniaDTO;
 import co.edu.uniquindio.laos.dto.cuenta.EditarUsuarioDTO;
 import co.edu.uniquindio.laos.dto.cuenta.InformacionUsuarioDTO;
+import co.edu.uniquindio.laos.dto.cuenta.RecuperarContraseniaDTO;
+import co.edu.uniquindio.laos.dto.queja.CrearQuejaDTO;
 import co.edu.uniquindio.laos.dto.sugerencias.CrearSugerenciaDTO;
+import co.edu.uniquindio.laos.model.Queja;
 import co.edu.uniquindio.laos.services.interfaces.SugerenciaService;
 import co.edu.uniquindio.laos.services.interfaces.UsuarioService;
 import co.edu.uniquindio.laos.dto.queja.CrearQuejaDTO;
@@ -25,8 +28,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UsuarioControlador {
 
-
     private final UsuarioService usuarioService;
+    private final QuejaService quejaService;
+
     private final SugerenciaService sugerenciaService;
 
     @PostMapping("/crear-sugerencia")
@@ -34,36 +38,45 @@ public class UsuarioControlador {
         sugerenciaService.crearSugerencia(dto);
         return ResponseEntity.ok().body( new MensajeDTO<>(false, "Sugerencia creada correctamente"));
     }
-
-    private final QuejaService quejaService;
-
     @PostMapping("/crear-queja")
     public ResponseEntity<MensajeDTO<String>> crearQueja(@Valid @RequestBody CrearQuejaDTO crearQuejaDTO) throws Exception {
         String id = quejaService.crearQueja(crearQuejaDTO);
         return ResponseEntity.ok().body(new MensajeDTO<>(false, "Queja creada correctamente con ID: " + id));
     }
 
-    @GetMapping("/quejas")
+    @GetMapping("/obtener-quejas")
     public ResponseEntity<MensajeDTO<List<Queja>>> obtenerQuejasPorClienteId(@RequestParam String clienteId) {
         List<Queja> quejas = quejaService.obtenerListaQuejasPorClienteId(clienteId);
         return ResponseEntity.ok().body(new MensajeDTO<>(false, quejas));
     }
-    @PutMapping("/editar-perfil")
-    public ResponseEntity<MensajeDTO<String>> editarUsuario(@Valid @RequestBody EditarUsuarioDTO editarUsuarioDTO)throws Exception{
+
+    @PutMapping("/editar-usuario")
+    public ResponseEntity<MensajeDTO<String>> editarUsuario(@Valid @RequestBody EditarUsuarioDTO editarUsuarioDTO) throws Exception {
         usuarioService.editarUsuario(editarUsuarioDTO);
-        return ResponseEntity.ok().body( new MensajeDTO<>(false, "Cliente actualizado correctamente") );
+        return ResponseEntity.ok().body(new MensajeDTO<>(false, "Usuario editado correctamente"));
     }
 
-    @GetMapping("/obtener-usuario/{codigo}")
-    public ResponseEntity<MensajeDTO<InformacionUsuarioDTO>> obtenerInformacionUsuario(@PathVariable String codigo) throws Exception{
-        return ResponseEntity.ok().body( new MensajeDTO<>(false,
-                usuarioService.obtenerInformacionUsuario(codigo) ) );
+    @DeleteMapping("/eliminar-usuario/{id}")
+    public ResponseEntity<MensajeDTO<String>> eliminarUsuario(@PathVariable String id) throws Exception {
+        usuarioService.eliminarUsuario(id);
+        return ResponseEntity.ok().body(new MensajeDTO<>(false, "Usuario eliminado correctamente"));
+    }
+
+    @GetMapping("/informacion-usuario/{id}")
+    public ResponseEntity<InformacionUsuarioDTO> obtenerInformacionUsuario(@PathVariable String id) throws Exception {
+        InformacionUsuarioDTO informacionUsuario = usuarioService.obtenerInformacionUsuario(id);
+        return ResponseEntity.ok(informacionUsuario);
+    }
+
+    @PostMapping("/recuperar-contrasenia")
+    public ResponseEntity<MensajeDTO<String>> recuperarContrasenia(@Valid @RequestBody RecuperarContraseniaDTO recuperarContraseniaDTO) throws Exception {
+        usuarioService.recuperarContrasenia(recuperarContraseniaDTO);
+        return ResponseEntity.ok().body(new MensajeDTO<>(false, "Contraseña recuperada correctamente"));
     }
 
     @PutMapping("/cambiar-contrasenia")
-    public ResponseEntity<MensajeDTO<String>> cambiarContrasenia(@RequestBody CambiarContraseniaDTO cambiarContraseniaDTO) throws Exception{
+    public ResponseEntity<MensajeDTO<String>> cambiarContrasenia(@Valid @RequestBody CambiarContraseniaDTO cambiarContraseniaDTO) throws Exception {
         usuarioService.cambiarContrasenia(cambiarContraseniaDTO);
-        return ResponseEntity.ok().body( new MensajeDTO<>(false, "Contraseña cambiada correctamente") );
+        return ResponseEntity.ok().body(new MensajeDTO<>(false, "Contraseña cambiada correctamente"));
     }
-
 }

@@ -20,6 +20,7 @@ public class Sugerencia {
 
     private String nombre;
     private String email;
+    private String motivo;
     private String mensaje;
     private String fecha;
     private boolean revisado;
