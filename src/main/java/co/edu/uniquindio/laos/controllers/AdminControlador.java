@@ -93,4 +93,10 @@ public class AdminControlador {
         List<Queja> quejas = quejaService.listarQuejas();
         return ResponseEntity.ok().body(new MensajeDTO<>(false, quejas));
     }
+
+    @PutMapping("/responder-queja/{idQueja}")
+    public ResponseEntity<MensajeDTO<String>> responderQueja(@PathVariable String idQueja, @RequestBody String respuesta) throws RecursoNoEncontradoException {
+        quejaService.responderQueja(idQueja, respuesta);
+        return ResponseEntity.ok().body(new MensajeDTO<>(false, "Queja resuelta correctamente"));
+    }
 }
