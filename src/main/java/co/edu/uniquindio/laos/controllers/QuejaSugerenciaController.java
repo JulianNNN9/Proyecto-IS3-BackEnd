@@ -3,8 +3,6 @@ package co.edu.uniquindio.laos.controllers;
 import co.edu.uniquindio.laos.dto.MensajeDTO;
 import co.edu.uniquindio.laos.dto.quejasugerencia.EnviarQuejaSugerenciaDTO;
 import co.edu.uniquindio.laos.dto.quejasugerencia.QuejaSugerenciaDTO;
-import co.edu.uniquindio.laos.dto.quejasugerencia.QuejasPorClienteDTO;
-import co.edu.uniquindio.laos.dto.quejasugerencia.QuejasPorTipoDTO;
 import co.edu.uniquindio.laos.services.interfaces.QuejaSugerenciaService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +20,7 @@ public class QuejaSugerenciaController {
     private final QuejaSugerenciaService quejaSugerenciaService;
 
     @PostMapping("/crear")
-    public ResponseEntity<MensajeDTO<String>> enviarQuejaSugerencia(@RequestBody EnviarQuejaSugerenciaDTO enviarQuejaSugerenciaDTO) {
+    public ResponseEntity<MensajeDTO<String>> enviarQuejaSugerencia(@RequestBody EnviarQuejaSugerenciaDTO enviarQuejaSugerenciaDTO) throws Exception {
         return ResponseEntity.ok().body( new MensajeDTO<>(false,
                 quejaSugerenciaService.registrarQuejaSugerencia(enviarQuejaSugerenciaDTO)) );
     }

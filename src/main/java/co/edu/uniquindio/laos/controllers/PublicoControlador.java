@@ -1,11 +1,13 @@
 package co.edu.uniquindio.laos.controllers;
 
+import java.util.List;
 import co.edu.uniquindio.laos.dto.MensajeDTO;
 import co.edu.uniquindio.laos.dto.TokenDTO;
 import co.edu.uniquindio.laos.dto.cuenta.ActivarCuentaDTO;
 import co.edu.uniquindio.laos.dto.cuenta.CrearUsuarioDTO;
 import co.edu.uniquindio.laos.dto.cuenta.IniciarSesionDTO;
 import co.edu.uniquindio.laos.dto.cuenta.RecuperarContraseniaDTO;
+import co.edu.uniquindio.laos.services.interfaces.QuejaSugerenciaService;
 import co.edu.uniquindio.laos.services.interfaces.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +22,7 @@ public class PublicoControlador {
 
     //private final EventoService eventoService;
     private final UsuarioService usuarioService;
-
+    private final QuejaSugerenciaService quejaSugerenciaService;
 
     @PostMapping("/iniciar-sesion")
     public ResponseEntity<MensajeDTO<TokenDTO>> iniciarSesion(@RequestBody IniciarSesionDTO iniciarSesionDTO) throws Exception{
@@ -55,5 +57,14 @@ public class PublicoControlador {
     public ResponseEntity<MensajeDTO<String>> activarCuenta(@RequestBody ActivarCuentaDTO activarCuentaDTO) throws Exception{
         usuarioService.activarCuenta(activarCuentaDTO);
         return ResponseEntity.ok().body( new MensajeDTO<>(false, "Cuenta activada correctamente") );
+    }
+
+    @GetMapping ("/quejas-sugerencias/listar-tipos")
+    public ResponseEntity<MensajeDTO<List<String>>> listarTipos() {
+        return ResponseEntity.ok().body(new MensajeDTO<>(false, quejaSugerenciaService.obtenerTipoPqrs()));
+    }
+    @GetMapping ("/quejas-sugerencias/listar-estados")
+    public ResponseEntity<MensajeDTO<List<String>>> listarEstados() {
+        return ResponseEntity.ok().body(new MensajeDTO<>(false, quejaSugerenciaService.obtenerEstadoPqrs()));
     }
 }

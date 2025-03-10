@@ -1,6 +1,9 @@
 package co.edu.uniquindio.laos.controllers;
 
 import co.edu.uniquindio.laos.dto.MensajeDTO;
+import co.edu.uniquindio.laos.dto.cuenta.CambiarContraseniaDTO;
+import co.edu.uniquindio.laos.dto.cuenta.EditarUsuarioDTO;
+import co.edu.uniquindio.laos.dto.cuenta.InformacionUsuarioDTO;
 import co.edu.uniquindio.laos.dto.sugerencias.CrearSugerenciaDTO;
 import co.edu.uniquindio.laos.services.interfaces.SugerenciaService;
 import co.edu.uniquindio.laos.services.interfaces.UsuarioService;
@@ -44,6 +47,23 @@ public class UsuarioControlador {
     public ResponseEntity<MensajeDTO<List<Queja>>> obtenerQuejasPorClienteId(@RequestParam String clienteId) {
         List<Queja> quejas = quejaService.obtenerListaQuejasPorClienteId(clienteId);
         return ResponseEntity.ok().body(new MensajeDTO<>(false, quejas));
+    }
+    @PutMapping("/editar-perfil")
+    public ResponseEntity<MensajeDTO<String>> editarUsuario(@Valid @RequestBody EditarUsuarioDTO editarUsuarioDTO)throws Exception{
+        usuarioService.editarUsuario(editarUsuarioDTO);
+        return ResponseEntity.ok().body( new MensajeDTO<>(false, "Cliente actualizado correctamente") );
+    }
+
+    @GetMapping("/obtener-usuario/{codigo}")
+    public ResponseEntity<MensajeDTO<InformacionUsuarioDTO>> obtenerInformacionUsuario(@PathVariable String codigo) throws Exception{
+        return ResponseEntity.ok().body( new MensajeDTO<>(false,
+                usuarioService.obtenerInformacionUsuario(codigo) ) );
+    }
+
+    @PutMapping("/cambiar-contrasenia")
+    public ResponseEntity<MensajeDTO<String>> cambiarContrasenia(@RequestBody CambiarContraseniaDTO cambiarContraseniaDTO) throws Exception{
+        usuarioService.cambiarContrasenia(cambiarContraseniaDTO);
+        return ResponseEntity.ok().body( new MensajeDTO<>(false, "Contraseña cambiada correctamente") );
     }
 
 }

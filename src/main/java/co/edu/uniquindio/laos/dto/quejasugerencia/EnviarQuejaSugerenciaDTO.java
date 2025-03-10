@@ -1,11 +1,11 @@
 package co.edu.uniquindio.laos.dto.quejasugerencia;
 
-import java.time.LocalDateTime;
+import jakarta.validation.constraints.NotBlank;
 
 public record EnviarQuejaSugerenciaDTO(
-        String tipo,
+        @NotBlank String tipo,
         String cliente,
-        String descripcion
+        @NotBlank String descripcion
 
 ){
 }

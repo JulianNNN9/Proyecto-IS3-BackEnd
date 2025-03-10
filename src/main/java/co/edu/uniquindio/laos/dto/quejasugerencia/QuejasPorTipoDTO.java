@@ -1,7 +1,9 @@
 package co.edu.uniquindio.laos.dto.quejasugerencia;
 
+import co.edu.uniquindio.laos.model.TipoPQRS;
+
 public record QuejasPorTipoDTO(
-        String tipo,
-        Long cantidad
+        String _id,
+        Long count
 ){
 }

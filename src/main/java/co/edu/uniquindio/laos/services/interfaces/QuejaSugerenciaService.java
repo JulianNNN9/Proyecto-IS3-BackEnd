@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface QuejaSugerenciaService {
 
-    String registrarQuejaSugerencia(EnviarQuejaSugerenciaDTO quejaSugerencia);
+    String registrarQuejaSugerencia(EnviarQuejaSugerenciaDTO quejaSugerencia) throws Exception;
 
     String actualizarEstado(String id, String estado, String respuesta) throws Exception;
 
@@ -21,4 +21,7 @@ public interface QuejaSugerenciaService {
 
     List<QuejasPorTipoDTO> obtenerQuejasPorClienteYTipo(String cliente);
 
+    List<String> obtenerTipoPqrs();
+
+    List<String> obtenerEstadoPqrs();
 }
