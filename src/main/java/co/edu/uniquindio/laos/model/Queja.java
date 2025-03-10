@@ -21,6 +21,7 @@ public class Queja {
     private String descripcion;
     private LocalDateTime fecha;
     private EstadoQueja estadoQueja;
-    private String servicioId;
+    private String nombreServicio;
+    private String nombreEstilista;
     private RespuestaQueja respuestaQueja;
 }

@@ -27,7 +27,8 @@ public class QuejaServiceImple implements QuejaService {
                 .descripcion(crearQuejaDTO.descripcion())
                 .fecha(crearQuejaDTO.fecha())
                 .estadoQueja(EstadoQueja.SIN_RESPONDER)
-                .servicioId(crearQuejaDTO.servicioId())
+                .nombreServicio(crearQuejaDTO.nombreServicio())
+                .nombreEstilista(crearQuejaDTO.nombreEstilista())
                 .respuestaQueja(null)
                 .build();
         quejaRepo.save(queja);
