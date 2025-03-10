@@ -16,6 +16,10 @@ public record CrearQuejaDTO (
         @NotNull(message = "La fecha es obligatoria")
         LocalDateTime fecha,
 
-        @NotBlank(message = "El servicioId no puede estar vacío")
-        String servicioId
+        @NotBlank(message = "El nombre del servicio no puede estar vacío")
+        String nombreServicio,
+
+        @NotBlank(message = "El nombre del estilista no puede estar vacío")
+        String nombreEstilista
+
 ) {}

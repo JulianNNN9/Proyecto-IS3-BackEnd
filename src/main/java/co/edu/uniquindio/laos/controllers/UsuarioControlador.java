@@ -7,7 +7,10 @@ import co.edu.uniquindio.laos.dto.cuenta.InformacionUsuarioDTO;
 import co.edu.uniquindio.laos.dto.cuenta.RecuperarContraseniaDTO;
 import co.edu.uniquindio.laos.dto.queja.CrearQuejaDTO;
 import co.edu.uniquindio.laos.dto.sugerencias.CrearSugerenciaDTO;
+import co.edu.uniquindio.laos.model.Estilista;
 import co.edu.uniquindio.laos.model.Queja;
+import co.edu.uniquindio.laos.model.Servicio;
+import co.edu.uniquindio.laos.services.interfaces.*;
 import co.edu.uniquindio.laos.services.interfaces.SugerenciaService;
 import co.edu.uniquindio.laos.services.interfaces.UsuarioService;
 import co.edu.uniquindio.laos.dto.queja.CrearQuejaDTO;
@@ -30,8 +33,9 @@ public class UsuarioControlador {
 
     private final UsuarioService usuarioService;
     private final QuejaService quejaService;
-
     private final SugerenciaService sugerenciaService;
+    private final EstilistaService estilistaService;
+    private final ServicioService servicioService;
 
     @PostMapping("/crear-sugerencia")
     public ResponseEntity<MensajeDTO<String>> crearSugerencia(@RequestBody CrearSugerenciaDTO dto) {
@@ -39,7 +43,7 @@ public class UsuarioControlador {
         return ResponseEntity.ok().body( new MensajeDTO<>(false, "Sugerencia creada correctamente"));
     }
     @PostMapping("/crear-queja")
-    public ResponseEntity<MensajeDTO<String>> crearQueja(@Valid @RequestBody CrearQuejaDTO crearQuejaDTO) throws Exception {
+    public ResponseEntity<MensajeDTO<String>> crearQueja(@RequestBody CrearQuejaDTO crearQuejaDTO) throws Exception {
         String id = quejaService.crearQueja(crearQuejaDTO);
         return ResponseEntity.ok().body(new MensajeDTO<>(false, "Queja creada correctamente con ID: " + id));
     }
@@ -78,5 +82,17 @@ public class UsuarioControlador {
     public ResponseEntity<MensajeDTO<String>> cambiarContrasenia(@Valid @RequestBody CambiarContraseniaDTO cambiarContraseniaDTO) throws Exception {
         usuarioService.cambiarContrasenia(cambiarContraseniaDTO);
         return ResponseEntity.ok().body(new MensajeDTO<>(false, "Contraseña cambiada correctamente"));
+    }
+
+    @GetMapping("/obtener-estilistas")
+    public ResponseEntity<MensajeDTO<List<Estilista>>> obtenerTodosLosEstilistas() {
+        List<Estilista> estilistas = estilistaService.obtenerTodosLosEstilistas();
+        return ResponseEntity.ok().body(new MensajeDTO<>(false, estilistas));
+    }
+
+    @GetMapping("/obtener-servicios")
+    public ResponseEntity<MensajeDTO<List<Servicio>>> obtenerTodosLosServicios() {
+        List<Servicio> servicios = servicioService.obtenerTodosLosServicios();
+        return ResponseEntity.ok().body(new MensajeDTO<>(false, servicios));
     }
 }
