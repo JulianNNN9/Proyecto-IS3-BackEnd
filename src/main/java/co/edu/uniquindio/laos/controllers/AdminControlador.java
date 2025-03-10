@@ -30,11 +30,6 @@ public class AdminControlador {
         return ResponseEntity.ok().body(new MensajeDTO<>(false, sugerenciaService.obtenerSugerencias()));
     }
 
-    @GetMapping("/sugerencias/filtrar-por-fecha")
-    public ResponseEntity<MensajeDTO<List<SugerenciaDTO>>> obtenerSugerenciasPorFecha(@RequestParam String fecha) {
-        return ResponseEntity.ok().body(new MensajeDTO<>(false, sugerenciaService.obtenerSugerenciasPorFecha(fecha)));
-    }
-
     @PutMapping("/sugerencias/marcar-revisado")
     public ResponseEntity<MensajeDTO<String>> marcarComoRevisado(@RequestBody String id) {
         sugerenciaService.marcarComoRevisado(id);
