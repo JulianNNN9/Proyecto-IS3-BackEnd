@@ -2,6 +2,7 @@ package co.edu.uniquindio.laos.controllers;
 
 import co.edu.uniquindio.laos.dto.MensajeDTO;
 import co.edu.uniquindio.laos.dto.sugerencias.SugerenciaDTO;
+import co.edu.uniquindio.laos.exceptions.RecursoNoEncontradoException;
 import co.edu.uniquindio.laos.services.interfaces.SugerenciaService;
 import co.edu.uniquindio.laos.dto.queja.QuejaDTO;
 import co.edu.uniquindio.laos.model.EstadoQueja;
@@ -86,5 +87,11 @@ public class AdminControlador {
     public ResponseEntity<MensajeDTO<List<Queja>>> listarQuejas() {
         List<Queja> quejas = quejaService.listarQuejas();
         return ResponseEntity.ok().body(new MensajeDTO<>(false, quejas));
+    }
+
+    @PutMapping("/responder-queja/{idQueja}")
+    public ResponseEntity<MensajeDTO<String>> responderQueja(@PathVariable String idQueja, @RequestBody String respuesta) throws RecursoNoEncontradoException {
+        quejaService.responderQueja(idQueja, respuesta);
+        return ResponseEntity.ok().body(new MensajeDTO<>(false, "Queja resuelta correctamente"));
     }
 }
