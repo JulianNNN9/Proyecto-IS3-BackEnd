@@ -14,4 +14,5 @@ public interface SugerenciaService {
     List<SugerenciaDTO> obtenerSugerenciasPorFecha(String fecha);
 
     void marcarComoRevisado(String id);
+
 }

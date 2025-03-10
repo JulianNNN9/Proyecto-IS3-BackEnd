@@ -2,6 +2,7 @@ package co.edu.uniquindio.laos.model;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -18,7 +19,8 @@ public class QuejaSugerencia {
     @EqualsAndHashCode.Include
     private String id;
     private TipoPQRS tipoPQRS;
-    private String cliente;
+    @DBRef
+    private Usuario usuario;
     private String descripcion;
     private EstadoPQRS estadoPQRS;
     private String respuesta;
