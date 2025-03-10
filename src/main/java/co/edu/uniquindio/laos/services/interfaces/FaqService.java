@@ -4,7 +4,6 @@ import co.edu.uniquindio.laos.dto.faq.CrearFaqDTO;
 import co.edu.uniquindio.laos.dto.faq.FaqDTO;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface FaqService {
 

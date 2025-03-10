@@ -10,6 +10,9 @@ import co.edu.uniquindio.laos.dto.sugerencias.CrearSugerenciaDTO;
 import co.edu.uniquindio.laos.model.Queja;
 import co.edu.uniquindio.laos.services.interfaces.SugerenciaService;
 import co.edu.uniquindio.laos.services.interfaces.UsuarioService;
+import co.edu.uniquindio.laos.dto.queja.CrearQuejaDTO;
+import co.edu.uniquindio.laos.dto.queja.QuejaDTO;
+import co.edu.uniquindio.laos.model.Queja;
 import co.edu.uniquindio.laos.services.interfaces.QuejaService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -29,14 +32,12 @@ public class UsuarioControlador {
     private final QuejaService quejaService;
 
     private final SugerenciaService sugerenciaService;
-    private final QuejaService quejaService;
 
     @PostMapping("/crear-sugerencia")
     public ResponseEntity<MensajeDTO<String>> crearSugerencia(@RequestBody CrearSugerenciaDTO dto) {
         sugerenciaService.crearSugerencia(dto);
         return ResponseEntity.ok().body( new MensajeDTO<>(false, "Sugerencia creada correctamente"));
     }
-
     @PostMapping("/crear-queja")
     public ResponseEntity<MensajeDTO<String>> crearQueja(@Valid @RequestBody CrearQuejaDTO crearQuejaDTO) throws Exception {
         String id = quejaService.crearQueja(crearQuejaDTO);

@@ -3,17 +3,22 @@ package co.edu.uniquindio.laos.repositories;
 import co.edu.uniquindio.laos.dto.quejasugerencia.QuejasPorClienteDTO;
 import co.edu.uniquindio.laos.dto.quejasugerencia.QuejasPorTipoDTO;
 import co.edu.uniquindio.laos.model.QuejaSugerencia;
+import co.edu.uniquindio.laos.model.TipoPQRS;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Repository
 public interface QuejaSugerenciaRepo extends MongoRepository<QuejaSugerencia, String> {
+
     // Contar número de quejas por tipo
     @Aggregation(pipeline = {
-            "{ $group: { _id: '$tipo', count: { $sum: 1 } } }"
+            "{ $group: { _id: '$tipoPQRS', count: { $sum: 1 } } }"
     })
     List<Map<String, Object>> contarQuejasPorTipoRaw();
 
@@ -26,15 +31,14 @@ public interface QuejaSugerenciaRepo extends MongoRepository<QuejaSugerencia, St
                 .collect(Collectors.toList());
     }
 
-    // Contar cantidad de quejas por cliente
-
+    // Contar cantidad de quejas por usuario (considerando ANONIMO si no tiene usuario)
     @Aggregation(pipeline = {
-            "{ $group: { _id: '$cliente', count: { $sum: 1 } } }"
+            "{ $group: { _id: { $ifNull: ['$usuario._id', 'ANONIMO'] }, count: { $sum: 1 } } }"
     })
-    List<Map<String, Object>> contarQuejasPorClienteRaw();
+    List<Map<String, Object>> contarQuejasPorUsuarioRaw();
 
-        default List<QuejasPorClienteDTO> contarQuejasPorCliente() {
-        return contarQuejasPorClienteRaw().stream()
+    default List<QuejasPorClienteDTO> contarQuejasPorUsuario() {
+        return contarQuejasPorUsuarioRaw().stream()
                 .map(entry -> new QuejasPorClienteDTO(
                         (String) entry.get("_id"),
                         ((Number) entry.get("count")).longValue()
@@ -42,15 +46,15 @@ public interface QuejaSugerenciaRepo extends MongoRepository<QuejaSugerencia, St
                 .collect(Collectors.toList());
     }
 
-    // Contar número de quejas/sugerencias de un cliente por tipo
+    // Contar número de quejas/sugerencias de un usuario por tipo
     @Aggregation(pipeline = {
-            "{ $match: { cliente: ?0 } }",
-            "{ $group: { _id: '$tipo', count: { $sum: 1 } } }"
+            "{ $match: { 'usuario._id': ObjectId(?0) } }",
+            "{ $group: { _id: '$tipoPQRS', count: { $sum: 1 } } }"
     })
-    List<Map<String, Object>> contarQuejasPorClienteYTipoRaw(String cliente);
+    List<Map<String, Object>> contarQuejasPorUsuarioYTipoRaw(String usuarioId);
 
-    default List<QuejasPorTipoDTO> contarQuejasPorClienteYTipo(String cliente) {
-        return contarQuejasPorClienteYTipoRaw(cliente).stream()
+    default List<QuejasPorTipoDTO> contarQuejasPorUsuarioYTipo(String usuarioId) {
+        return contarQuejasPorUsuarioYTipoRaw(usuarioId).stream()
                 .map(entry -> new QuejasPorTipoDTO(
                         (String) entry.get("_id"),
                         ((Number) entry.get("count")).longValue()
