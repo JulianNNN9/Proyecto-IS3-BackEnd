@@ -2,6 +2,7 @@ package co.edu.uniquindio.laos.controllers;
 
 import co.edu.uniquindio.laos.dto.MensajeDTO;
 import co.edu.uniquindio.laos.dto.sugerencias.SugerenciaDTO;
+import co.edu.uniquindio.laos.exceptions.RecursoNoEncontradoException;
 import co.edu.uniquindio.laos.services.interfaces.SugerenciaService;
 import co.edu.uniquindio.laos.dto.queja.QuejaDTO;
 import co.edu.uniquindio.laos.model.EstadoQueja;
@@ -37,6 +38,11 @@ public class AdminControlador {
     @PutMapping("/sugerencias/marcar-revisado")
     public ResponseEntity<MensajeDTO<String>> marcarComoRevisado(@RequestBody String id) {
         sugerenciaService.marcarComoRevisado(id);
+        return ResponseEntity.ok().body(new MensajeDTO<>(false, "Sugerencia marcada como revisada correctamente"));
+    }
+    @PutMapping("/quejas/responder-queja")
+    public ResponseEntity<MensajeDTO<String>> responderQueja(@RequestBody String id, String respuesta) throws RecursoNoEncontradoException {
+        quejaService.responderQueja(id, respuesta);
         return ResponseEntity.ok().body(new MensajeDTO<>(false, "Sugerencia marcada como revisada correctamente"));
     }
 
