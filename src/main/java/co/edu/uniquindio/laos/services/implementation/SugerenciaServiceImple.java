@@ -61,23 +61,6 @@ public class SugerenciaServiceImple implements SugerenciaService {
     }
 
     @Override
-    public List<SugerenciaDTO> obtenerSugerenciasPorFecha(String fecha) {
-        List<Sugerencia> sugerencias = sugerenciaRepository.findByFecha(fecha);
-
-        return sugerencias.stream().map(sugerencia ->
-                new SugerenciaDTO(
-                        sugerencia.getId(),
-                        sugerencia.getNombre(),
-                        sugerencia.getEmail(),
-                        sugerencia.getMotivo(),
-                        sugerencia.getMensaje(),
-                        sugerencia.getFecha(),
-                        sugerencia.isRevisado()
-                )
-        ).collect(Collectors.toList());
-    }
-
-    @Override
     public void marcarComoRevisado(String id) {
         sugerenciaRepository.findById(id).map(sugerencia -> {
             sugerencia.setRevisado(true);
