@@ -95,4 +95,10 @@ public class UsuarioControlador {
         List<Servicio> servicios = servicioService.obtenerTodosLosServicios();
         return ResponseEntity.ok().body(new MensajeDTO<>(false, servicios));
     }
+
+    @GetMapping("/quejas/{clienteId}")
+    public ResponseEntity<MensajeDTO<List<Queja>>> obtenerListaQuejasPorClienteId(@PathVariable String clienteId) {
+        List<Queja> quejas = quejaService.obtenerListaQuejasPorClienteId(clienteId);
+        return ResponseEntity.ok().body(new MensajeDTO<>(false, quejas));
+    }
 }
