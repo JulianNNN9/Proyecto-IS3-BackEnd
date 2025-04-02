@@ -30,19 +30,16 @@ public class AdminControlador {
         return ResponseEntity.ok().body(new MensajeDTO<>(false, sugerenciaService.obtenerSugerencias()));
     }
 
+    /**
     @GetMapping("/sugerencias/filtrar-por-fecha")
     public ResponseEntity<MensajeDTO<List<SugerenciaDTO>>> obtenerSugerenciasPorFecha(@RequestParam String fecha) {
         return ResponseEntity.ok().body(new MensajeDTO<>(false, sugerenciaService.obtenerSugerenciasPorFecha(fecha)));
     }
+     **/
 
     @PutMapping("/sugerencias/marcar-revisado")
     public ResponseEntity<MensajeDTO<String>> marcarComoRevisado(@RequestBody String id) {
         sugerenciaService.marcarComoRevisado(id);
-        return ResponseEntity.ok().body(new MensajeDTO<>(false, "Sugerencia marcada como revisada correctamente"));
-    }
-    @PutMapping("/quejas/responder-queja")
-    public ResponseEntity<MensajeDTO<String>> responderQueja(@RequestBody String id, String respuesta) throws RecursoNoEncontradoException {
-        quejaService.responderQueja(id, respuesta);
         return ResponseEntity.ok().body(new MensajeDTO<>(false, "Sugerencia marcada como revisada correctamente"));
     }
 
