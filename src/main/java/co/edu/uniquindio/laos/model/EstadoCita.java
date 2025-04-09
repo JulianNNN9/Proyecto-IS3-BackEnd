@@ -1,5 +1,5 @@
 package co.edu.uniquindio.laos.model;
 
 public enum EstadoCita {
-    PENDIENTE, CONFIRMADA, CANCELADA, COMPLETADA
+    CONFIRMADA, REPROGRAMADA, LISTA_ESPERA, CANCELADA, COMPLETADA
 }
