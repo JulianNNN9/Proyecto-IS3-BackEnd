@@ -1,8 +1,10 @@
 package co.edu.uniquindio.laos.controllers;
 
 import co.edu.uniquindio.laos.dto.MensajeDTO;
+import co.edu.uniquindio.laos.dto.cita.InformacionCitaDTO;
 import co.edu.uniquindio.laos.dto.sugerencias.SugerenciaDTO;
 import co.edu.uniquindio.laos.exceptions.RecursoNoEncontradoException;
+import co.edu.uniquindio.laos.services.interfaces.CitasService;
 import co.edu.uniquindio.laos.services.interfaces.SugerenciaService;
 import co.edu.uniquindio.laos.dto.queja.QuejaDTO;
 import co.edu.uniquindio.laos.model.EstadoQueja;
@@ -24,6 +26,7 @@ public class AdminControlador {
 
     private final SugerenciaService sugerenciaService;
      private final QuejaService quejaService;
+     private final CitasService citasService;
 
     @GetMapping("/obtener-sugerencias")
     public ResponseEntity<MensajeDTO<List<SugerenciaDTO>>> obtenerSugerencias() {
@@ -95,5 +98,41 @@ public class AdminControlador {
     public ResponseEntity<MensajeDTO<String>> responderQueja(@PathVariable String idQueja, @RequestBody String respuesta) throws RecursoNoEncontradoException {
         quejaService.responderQueja(idQueja, respuesta);
         return ResponseEntity.ok().body(new MensajeDTO<>(false, "Queja resuelta correctamente"));
+    }
+
+    @GetMapping("/citas/todas")
+    public ResponseEntity<MensajeDTO<List<InformacionCitaDTO>>> listarTodasCitas() {
+        List<InformacionCitaDTO> citas = citasService.obtenerCitasPorEstado("TODAS");
+        return ResponseEntity.ok().body(new MensajeDTO<>(false, citas));
+    }
+
+    @GetMapping("/citas/por-estado")
+    public ResponseEntity<MensajeDTO<List<InformacionCitaDTO>>> listarCitasPorEstado(@RequestParam String estado) {
+        List<InformacionCitaDTO> citas = citasService.obtenerCitasPorEstado(estado);
+        return ResponseEntity.ok().body(new MensajeDTO<>(false, citas));
+    }
+
+    @GetMapping("/citas/por-estilista/{estilistaId}")
+    public ResponseEntity<MensajeDTO<List<InformacionCitaDTO>>> listarCitasPorEstilista(@PathVariable String estilistaId) {
+        List<InformacionCitaDTO> citas = citasService.obtenerCitasPorEstilistaId(estilistaId);
+        return ResponseEntity.ok().body(new MensajeDTO<>(false, citas));
+    }
+
+    @GetMapping("/citas/por-cliente/{clienteId}")
+    public ResponseEntity<MensajeDTO<List<InformacionCitaDTO>>> listarCitasPorCliente(@PathVariable String clienteId) {
+        List<InformacionCitaDTO> citas = citasService.obtenerCitasPorClienteId(clienteId);
+        return ResponseEntity.ok().body(new MensajeDTO<>(false, citas));
+    }
+
+    @GetMapping("/citas/{citaId}")
+    public ResponseEntity<MensajeDTO<InformacionCitaDTO>> obtenerCitaPorId(@PathVariable String citaId) throws Exception {
+        InformacionCitaDTO cita = citasService.obtenerCitaPorId(citaId);
+        return ResponseEntity.ok().body(new MensajeDTO<>(false, cita));
+    }
+
+    @PutMapping("/citas/cancelar/{citaId}")
+    public ResponseEntity<MensajeDTO<String>> cancelarCita(@PathVariable String citaId) throws Exception {
+        String id = citasService.cancelarCita(citaId);
+        return ResponseEntity.ok().body(new MensajeDTO<>(false, "Cita con id " + id + " cancelada correctamente"));
     }
 }
