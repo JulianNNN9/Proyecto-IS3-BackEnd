@@ -64,18 +64,17 @@ package co.edu.uniquindio.laos.services.implementation;
         @Override
         public String reprogramarCita(ReprogramarCitaDTO reprogramarCitaDTO) throws Exception {
             Optional<Cita> optionalCita = citaRepo.findById(reprogramarCitaDTO.citaId());
-
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             if (optionalCita.isEmpty()) {
                 throw new RecursoNoEncontradoException("No existe una cita con el id: " + reprogramarCitaDTO.citaId());
             }
 
             // Aquí se verifica si la cita esta disponible en ese horario y con ese estilista
-            if(citaRepo.existsByEstilistaIdAndFechaHora(optionalCita.get().getEstilistaId(), LocalDateTime.parse(reprogramarCitaDTO.nuevaFechaHora()))) {
+            if(citaRepo.existsByEstilistaIdAndFechaHora(optionalCita.get().getEstilistaId(), LocalDateTime.parse(reprogramarCitaDTO.nuevaFechaHora(), formatter))) {
                 throw new HorarioYEstilistaOcupadoException("El estilista ya tiene una cita programada en ese horario");
             }
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-            LocalDateTime newFechaHora = LocalDateTime.parse(reprogramarCitaDTO.nuevaFechaHora());
+            LocalDateTime newFechaHora = LocalDateTime.parse(reprogramarCitaDTO.nuevaFechaHora(), formatter);
 
             Cita cita = optionalCita.get();
             cita.setFechaHora(newFechaHora);
