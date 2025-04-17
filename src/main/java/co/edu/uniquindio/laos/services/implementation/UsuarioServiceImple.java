@@ -22,22 +22,69 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
+/**
+ * Implementación del servicio de usuarios que maneja la lógica de negocio
+ * para la gestión de cuentas de usuario en el sistema.
+ *
+ * Esta clase se encarga de la autenticación, registro, recuperaci��n de contraseña,
+ * activación de cuentas y gestión de información de los usuarios.
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class UsuarioServiceImple implements UsuarioService {
 
+    /**
+     * Utilidades para la generación y validación de tokens JWT
+     */
     private final JWTUtils jwtUtils;
+
+    /**
+     * Número máximo de intentos de inicio de sesión fallidos permitidos
+     */
     private static final int MAX_FAILED_ATTEMPTS = 5;
+
+    /**
+     * Duración del bloqueo temporal de cuenta por intentos fallidos
+     */
     private static final Duration LOCK_DURATION = Duration.ofMinutes(5);
+
+    /**
+     * Repositorio para el acceso y persistencia de usuarios en la base de datos
+     */
     private final UsuarioRepo usuarioRepo;
+
+    /**
+     * Servicio para gestionar cupones promocionales
+     */
     private final CuponService cuponService;
+
+    /**
+     * Servicio para el envío de correos electrónicos
+     */
     private final EmailService emailService;
 
+    /**
+     * Actualiza un token JWT expirado con un nuevo token válido
+     *
+     * @param expiredToken Token expirado que se va a refrescar
+     * @return TokenDTO con el nuevo token JWT válido
+     */
     public TokenDTO refreshToken(String expiredToken) {
         return new TokenDTO(jwtUtils.refreshToken(expiredToken));
     }
 
+    /**
+     * Registra un nuevo usuario en el sistema
+     *
+     * Este método valida que no exista otro usuario con la misma cédula o email,
+     * encripta la contraseña, crea una cuenta con estado inactivo y envía
+     * un código de activación por correo electrónico.
+     *
+     * @param crearCuentaDTO Datos necesarios para crear la cuenta
+     * @return Identificador único del usuario creado
+     * @throws Exception Si la cédula o email ya están en uso
+     */
     @Override
     public String crearUsuario(CrearUsuarioDTO crearCuentaDTO) throws Exception {
 
@@ -66,22 +113,32 @@ public class UsuarioServiceImple implements UsuarioService {
         enviarCodigoActivacionCuenta(crearCuentaDTO.email());
 
         return usuarioGuardado.getId();
-
     }
 
-
+    /**
+     * Actualiza la información personal de un usuario existente
+     *
+     * @param editarCuentaDTO Datos actualizados del usuario
+     * @throws RecursoNoEncontradoException Si el usuario no existe
+     */
     @Override
     public void editarUsuario(EditarUsuarioDTO editarCuentaDTO) throws RecursoNoEncontradoException {
 
         Usuario usuario = obtenerUsuario(editarCuentaDTO.idUsuario());
 
-        usuario.setNombreCompleto( editarCuentaDTO.nombreCompleto() );
-        usuario.setDireccion( editarCuentaDTO.direccion() );
-        usuario.setTelefono( editarCuentaDTO.telefono() );
+        usuario.setNombreCompleto(editarCuentaDTO.nombreCompleto());
+        usuario.setDireccion(editarCuentaDTO.direccion());
+        usuario.setTelefono(editarCuentaDTO.telefono());
 
         usuarioRepo.save(usuario);
     }
 
+    /**
+     * Realiza la eliminación lógica de un usuario cambiando su estado a ELIMINADO
+     *
+     * @param id Identificador único del usuario a eliminar
+     * @throws RecursoNoEncontradoException Si el usuario no existe
+     */
     @Override
     public void eliminarUsuario(String id) throws RecursoNoEncontradoException {
 
@@ -92,6 +149,13 @@ public class UsuarioServiceImple implements UsuarioService {
         usuarioRepo.save(usuario);
     }
 
+    /**
+     * Recupera la información personal de un usuario específico
+     *
+     * @param id Identificador único del usuario
+     * @return Objeto InformacionUsuarioDTO con los datos personales
+     * @throws RecursoNoEncontradoException Si el usuario no existe
+     */
     @Override
     public InformacionUsuarioDTO obtenerInformacionUsuario(String id) throws RecursoNoEncontradoException {
 
@@ -106,6 +170,15 @@ public class UsuarioServiceImple implements UsuarioService {
         );
     }
 
+    /**
+     * Envía un código de recuperación a un correo electrónico para restablecer la contraseña
+     *
+     * Este método genera un código aleatorio, lo almacena asociado al usuario y
+     * lo envía por correo para iniciar el proceso de recuperación.
+     *
+     * @param correo Dirección de correo del usuario que solicita recuperar su contraseña
+     * @throws Exception Si ocurre algún error en el proceso
+     */
     @Override
     public void enviarCodigoRecuperacionCuenta(String correo) throws Exception {
 
@@ -131,6 +204,15 @@ public class UsuarioServiceImple implements UsuarioService {
         }
     }
 
+    /**
+     * Envía un código de activación al correo electrónico de un usuario recién registrado
+     *
+     * Este método genera un código aleatorio, lo almacena asociado al usuario y
+     * lo envía por correo para completar el proceso de activación.
+     *
+     * @param correo Dirección de correo del usuario a activar
+     * @throws Exception Si ocurre algún error en el proceso
+     */
     @Override
     public void enviarCodigoActivacionCuenta(String correo) throws Exception {
 
@@ -152,11 +234,24 @@ public class UsuarioServiceImple implements UsuarioService {
                     correo);
 
             emailService.enviarCorreo(emailDTO);
-        }catch ( Exception e){
+        }catch (Exception e){
             return;
         }
     }
 
+    /**
+     * Completa el proceso de recuperación de contraseña cambiando la contraseña del usuario
+     *
+     * Este método verifica el código de recuperación, valida que las contraseñas coincidan
+     * y actualiza la contraseña del usuario con la nueva contraseña encriptada.
+     *
+     * @param recuperarContraseniaDTO Datos necesarios para el proceso de recuperación
+     * @throws RecursoNoEncontradoException Si el usuario no existe
+     * @throws ContraseniaNoCoincidenException Si las contraseñas nuevas no coinciden
+     * @throws CodigoExpiradoException Si el código de recuperación ha expirado (más de 15 minutos)
+     * @throws CodigoInvalidoException Si el código proporcionado no coincide con el enviado
+     * @throws RecursoEncontradoException Si hay algún problema con la recuperación
+     */
     @Override
     public void recuperarContrasenia(RecuperarContraseniaDTO recuperarContraseniaDTO) throws RecursoNoEncontradoException, ContraseniaNoCoincidenException, CodigoExpiradoException, CodigoInvalidoException, RecursoEncontradoException {
 
@@ -178,6 +273,14 @@ public class UsuarioServiceImple implements UsuarioService {
         usuarioRepo.save(usuario);
     }
 
+    /**
+     * Cambia la contraseña de un usuario verificando primero la contraseña actual
+     *
+     * @param cambiarContraseniaDTO Datos necesarios para el cambio de contraseña
+     * @throws RecursoNoEncontradoException Si el usuario no existe
+     * @throws ContraseniaNoCoincidenException Si las contraseñas nuevas no coinciden
+     * @throws ContraseniaIncorrectaException Si la contraseña actual es incorrecta
+     */
     @Override
     public void cambiarContrasenia(CambiarContraseniaDTO cambiarContraseniaDTO) throws RecursoNoEncontradoException, ContraseniaNoCoincidenException, ContraseniaIncorrectaException {
 
@@ -188,7 +291,7 @@ public class UsuarioServiceImple implements UsuarioService {
             throw new ContraseniaNoCoincidenException("Las contraseñas no coindicen");
         }
 
-        if( !passwordEncoder.matches(cambiarContraseniaDTO.contraseniaAntigua(), usuario.getContrasenia()) ) {
+        if(!passwordEncoder.matches(cambiarContraseniaDTO.contraseniaAntigua(), usuario.getContrasenia())) {
             throw new ContraseniaIncorrectaException("La contraseña es incorrecta");
         }
 
@@ -197,6 +300,16 @@ public class UsuarioServiceImple implements UsuarioService {
         usuarioRepo.save(usuario);
     }
 
+    /**
+     * Busca un usuario por su identificador único
+     *
+     * Este método normaliza el ID a 24 caracteres si es necesario y verifica
+     * que el usuario no esté eliminado.
+     *
+     * @param id Identificador único del usuario
+     * @return Objeto Usuario encontrado
+     * @throws RecursoNoEncontradoException Si el usuario no existe o está eliminado
+     */
     @Override
     public Usuario obtenerUsuario(String id) throws RecursoNoEncontradoException {
         if (id.length() != 24) {
@@ -216,6 +329,13 @@ public class UsuarioServiceImple implements UsuarioService {
         return optionalUsuario.get();
     }
 
+    /**
+     * Busca un usuario por su dirección de correo electrónico
+     *
+     * @param correo Dirección de correo electrónico
+     * @return Objeto Usuario encontrado
+     * @throws RecursoNoEncontradoException Si no existe un usuario con ese correo o está eliminado
+     */
     @Override
     public Usuario obtenerUsuarioPorEmail(String correo) throws RecursoNoEncontradoException {
 
@@ -227,6 +347,15 @@ public class UsuarioServiceImple implements UsuarioService {
         return optionalUsuario.get();
     }
 
+    /**
+     * Incrementa el contador de intentos fallidos de inicio de sesión de un usuario
+     *
+     * Si se alcanza el número máximo de intentos permitidos, se bloquea la cuenta
+     * temporalmente según la duración configurada.
+     *
+     * @param correo Dirección de correo del usuario
+     * @throws RecursoNoEncontradoException Si el usuario no existe
+     */
     @Override
     public void incrementarIntentosFallidos(String correo) throws RecursoNoEncontradoException {
         Usuario usuario = obtenerUsuarioPorEmail(correo);
@@ -239,6 +368,19 @@ public class UsuarioServiceImple implements UsuarioService {
         usuarioRepo.save(usuario);
     }
 
+    /**
+     * Autentica a un usuario y genera un token JWT para su sesión
+     *
+     * Este método valida las credenciales del usuario, verifica que la cuenta esté activa
+     * y no bloqueada, y gestiona los intentos fallidos de inicio de sesión.
+     *
+     * @param iniciarSesionDTO Credenciales de inicio de sesión (email y contraseña)
+     * @return TokenDTO con el token JWT para autenticación
+     * @throws RecursoNoEncontradoException Si el usuario no existe
+     * @throws CuentaInactivaEliminadaException Si la cuenta no está activada o fue eliminada
+     * @throws CuentaBloqueadaException Si la cuenta está temporalmente bloqueada por intentos fallidos
+     * @throws ContraseniaIncorrectaException Si la contraseña proporcionada es incorrecta
+     */
     @Override
     public TokenDTO iniciarSesion(IniciarSesionDTO iniciarSesionDTO) throws RecursoNoEncontradoException,
             CuentaInactivaEliminadaException, CuentaBloqueadaException, ContraseniaIncorrectaException {
@@ -264,8 +406,7 @@ public class UsuarioServiceImple implements UsuarioService {
 
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-
-        if( !passwordEncoder.matches(iniciarSesionDTO.contrasenia(), usuario.getContrasenia()) ) {
+        if(!passwordEncoder.matches(iniciarSesionDTO.contrasenia(), usuario.getContrasenia())) {
             incrementarIntentosFallidos(usuario.getEmail());
             throw new ContraseniaIncorrectaException("La contraseña es incorrecta");
         }
@@ -274,9 +415,18 @@ public class UsuarioServiceImple implements UsuarioService {
 
         Map<String, Object> map = construirClaims(usuario);
 
-        return new TokenDTO( jwtUtils.generarToken(usuario.getEmail(), map) );
+        return new TokenDTO(jwtUtils.generarToken(usuario.getEmail(), map));
     }
 
+    /**
+     * Activa la cuenta de un usuario utilizando el código de activación enviado
+     *
+     * Este método verifica que el código sea correcto y no haya expirado,
+     * y cambia el estado de la cuenta a ACTIVO.
+     *
+     * @param activarCuentaDTO Datos necesarios para la activación (email y código)
+     * @throws Exception Si ocurre algún error durante la activación
+     */
     @Override
     public void activarCuenta(ActivarCuentaDTO activarCuentaDTO) throws Exception {
 
@@ -297,13 +447,31 @@ public class UsuarioServiceImple implements UsuarioService {
         usuarioRepo.save(usuarioActivacion);
     }
 
-    /*
-    METODOS ADICIONALES
+    /**
+     * Verifica si ya existe un usuario con la cédula proporcionada
+     *
+     * @param cedula Número de cédula a verificar
+     * @return true si la cédula ya está registrada, false en caso contrario
      */
-    private boolean existeCedula(String cedula) { return usuarioRepo.findByCedulaAndEstadoUsuarioNot(cedula, EstadoUsuario.ELIMINADO).isPresent(); }
+    private boolean existeCedula(String cedula) {
+        return usuarioRepo.findByCedulaAndEstadoUsuarioNot(cedula, EstadoUsuario.ELIMINADO).isPresent();
+    }
 
-    private boolean existeEmail(String email) {return usuarioRepo.findByEmailAndEstadoUsuarioNot(email, EstadoUsuario.ELIMINADO).isPresent();}
+    /**
+     * Verifica si ya existe un usuario con el correo electrónico proporcionado
+     *
+     * @param email Dirección de correo electrónico a verificar
+     * @return true si el email ya está registrado, false en caso contrario
+     */
+    private boolean existeEmail(String email) {
+        return usuarioRepo.findByEmailAndEstadoUsuarioNot(email, EstadoUsuario.ELIMINADO).isPresent();
+    }
 
+    /**
+     * Genera un código aleatorio de 6 caracteres para activación o recuperación
+     *
+     * @return Código generado de 6 caracteres alfanuméricos
+     */
     private String generarCodigoActivacion(){
 
         String cadena = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -319,16 +487,35 @@ public class UsuarioServiceImple implements UsuarioService {
         return codigo.toString();
     }
 
+    /**
+     * Encripta una contraseña en texto plano utilizando BCrypt
+     *
+     * @param password Contraseña en texto plano a encriptar
+     * @return Versión encriptada de la contraseña
+     */
     private String encriptarPassword(String password){
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        return passwordEncoder.encode( password );
+        return passwordEncoder.encode(password);
     }
 
+    /**
+     * Verifica si una cuenta está temporalmente bloqueada por intentos fallidos
+     *
+     * @param correo Dirección de correo del usuario a verificar
+     * @return true si la cuenta está bloqueada, false en caso contrario
+     * @throws RecursoNoEncontradoException Si el usuario no existe
+     */
     private boolean estaBloqueada(String correo) throws RecursoNoEncontradoException {
         Usuario usuario = obtenerUsuarioPorEmail(correo);
         return usuario.getTiempoBloqueo() != null && LocalDateTime.now().isBefore(usuario.getTiempoBloqueo());
     }
 
+    /**
+     * Desbloquea una cuenta de usuario y reinicia el contador de intentos fallidos
+     *
+     * @param username Dirección de correo del usuario a desbloquear
+     * @throws RecursoNoEncontradoException Si el usuario no existe
+     */
     private void desbloquearUsuario(String username) throws RecursoNoEncontradoException {
         Usuario usuario = obtenerUsuarioPorEmail(username);
         usuario.setFallosInicioSesion(0);
@@ -336,6 +523,12 @@ public class UsuarioServiceImple implements UsuarioService {
         usuarioRepo.save(usuario);
     }
 
+    /**
+     * Construye un mapa con los datos relevantes del usuario para incluir en el token JWT
+     *
+     * @param cuenta Usuario cuyos datos se incluirán en el token
+     * @return Mapa con los claims (rol, nombre y id) del usuario
+     */
     private Map<String, Object> construirClaims(Usuario cuenta) {
         return Map.of(
                 "rol", cuenta.getRol(),
