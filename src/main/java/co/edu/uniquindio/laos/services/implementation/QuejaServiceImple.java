@@ -151,7 +151,7 @@ package co.edu.uniquindio.laos.services.implementation;
                  */
                 @Override
                 public List<Queja> listarQuejas() {
-                    return quejaRepo.findByEstadoQueja("SIN_RESPONDER");
+                    return quejaRepo.findAll();
                 }
 
                 /**

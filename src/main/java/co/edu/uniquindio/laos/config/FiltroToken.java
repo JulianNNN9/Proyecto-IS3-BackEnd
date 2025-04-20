@@ -69,13 +69,13 @@ package co.edu.uniquindio.laos.config;
                             if (token != null) {
                                 Jws<Claims> jws = jwtUtils.parseJwt(token);
                                 if (!jws.getPayload().get("rol").equals("CLIENTE")) {
-                                    crearRespuestaError("No tiene permisos para acceder a este recurso",
+                                    crearRespuestaError("No tiene permisos para acceder a este recurso: No es CLIENTE",
                                             HttpServletResponse.SC_FORBIDDEN, response);
                                 } else {
                                     error = false;
                                 }
                             } else {
-                                crearRespuestaError("No tiene permisos para acceder a este recurso",
+                                crearRespuestaError("No tiene permisos para acceder a este recurso: Token NULL",
                                         HttpServletResponse.SC_FORBIDDEN, response);
                             }
                         // Rutas para estilistas (/api/estilista)

@@ -139,10 +139,10 @@ public class UsuarioControlador {
      * @return Datos completos del usuario solicitado
      * @throws Exception Si el usuario no existe
      */
-    @GetMapping("/informacion-usuario/{id}")
-    public ResponseEntity<InformacionUsuarioDTO> obtenerInformacionUsuario(@PathVariable String id) throws Exception {
-        InformacionUsuarioDTO informacionUsuario = usuarioService.obtenerInformacionUsuario(id);
-        return ResponseEntity.ok(informacionUsuario);
+    @GetMapping("/obtener-usuario/{codigo}")
+    public ResponseEntity<MensajeDTO<InformacionUsuarioDTO>> obtenerInformacionUsuario(@PathVariable String codigo) throws Exception{
+        return ResponseEntity.ok().body( new MensajeDTO<>(false,
+                usuarioService.obtenerInformacionUsuario(codigo) ) );
     }
 
     /**

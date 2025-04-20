@@ -2,6 +2,8 @@ package co.edu.uniquindio.laos.controllers;
 
     import co.edu.uniquindio.laos.dto.MensajeDTO;
     import co.edu.uniquindio.laos.dto.cita.InformacionCitaDTO;
+    import co.edu.uniquindio.laos.dto.cuenta.EditarUsuarioDTO;
+    import co.edu.uniquindio.laos.dto.cuenta.InformacionUsuarioDTO;
     import co.edu.uniquindio.laos.dto.sugerencias.SugerenciaDTO;
     import co.edu.uniquindio.laos.exceptions.RecursoNoEncontradoException;
     import co.edu.uniquindio.laos.services.interfaces.CitasService;
@@ -10,7 +12,9 @@ package co.edu.uniquindio.laos.controllers;
     import co.edu.uniquindio.laos.model.EstadoQueja;
     import co.edu.uniquindio.laos.model.Queja;
     import co.edu.uniquindio.laos.services.interfaces.QuejaService;
+    import co.edu.uniquindio.laos.services.interfaces.UsuarioService;
     import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+    import jakarta.validation.Valid;
     import lombok.RequiredArgsConstructor;
     import org.springframework.http.ResponseEntity;
     import org.springframework.web.bind.annotation.*;
@@ -47,6 +51,11 @@ package co.edu.uniquindio.laos.controllers;
          * Servicio para la gestión de citas
          */
         private final CitasService citasService;
+
+        /**
+         * Servicio para la gestion de usuarios
+         */
+        private final UsuarioService usuarioService;
 
         /**
          * Obtiene todas las sugerencias registradas en el sistema
@@ -236,5 +245,15 @@ package co.edu.uniquindio.laos.controllers;
         public ResponseEntity<MensajeDTO<String>> cancelarCita(@PathVariable String citaId) throws Exception {
             String id = citasService.cancelarCita(citaId);
             return ResponseEntity.ok().body(new MensajeDTO<>(false, "Cita con id " + id + " cancelada correctamente"));
+        }
+        @GetMapping("/obtener-usuario/{codigo}")
+        public ResponseEntity<MensajeDTO<InformacionUsuarioDTO>> obtenerInformacionUsuarioAdmin(@PathVariable String codigo) throws Exception{
+            return ResponseEntity.ok().body( new MensajeDTO<>(false,
+                    usuarioService.obtenerInformacionUsuario(codigo) ) );
+        }
+        @PutMapping("/editar-perfil")
+        public ResponseEntity<MensajeDTO<String>> editarUsuarioAdmin(@Valid @RequestBody EditarUsuarioDTO editarUsuarioDTO)throws Exception{
+            usuarioService.editarUsuario(editarUsuarioDTO);
+            return ResponseEntity.ok().body( new MensajeDTO<>(false, "Cliente actualizado correctamente") );
         }
     }
