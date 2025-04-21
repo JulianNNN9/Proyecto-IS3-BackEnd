@@ -11,6 +11,9 @@ import java.util.List;
 @Repository
 public interface QuejaRepo extends MongoRepository<Queja, String> {
 
+
+    List<Queja> findAll();
+
     @Query("{ 'servicioId' : ?0 }")
     List<Queja> findByServicioId(String servicioId);
 
