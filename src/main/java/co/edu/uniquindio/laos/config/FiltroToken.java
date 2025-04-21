@@ -79,10 +79,11 @@ package co.edu.uniquindio.laos.config;
                                         HttpServletResponse.SC_FORBIDDEN, response);
                             }
                         // Rutas para estilistas (/api/estilista)
+                            //OJITOOOOO: CAMBIARLO LUEGO A ESTILISTA DE NUEVO
                         } else if (requestURI.startsWith("/api/estilista")) {
                             if (token != null) {
                                 Jws<Claims> jws = jwtUtils.parseJwt(token);
-                                if (!jws.getPayload().get("rol").equals("ESTILISTA")) {
+                                if (!jws.getPayload().get("rol").equals("CLIENTE")) {
                                     crearRespuestaError("No tiene permisos para acceder a este recurso",
                                             HttpServletResponse.SC_FORBIDDEN, response);
                                 } else {
