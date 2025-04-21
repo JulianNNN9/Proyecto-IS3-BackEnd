@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 public record InformacionCitaDTO(
 
+        String citaId,
         String usuarioId,
         String estilistaId,
         String servicioId,

@@ -206,7 +206,7 @@ public class UsuarioControlador {
      * @return Mensaje de confirmación con el ID de la cita creada
      * @throws Exception Si hay conflictos de horario o datos inválidos
      */
-    @PostMapping("/citas/crear")
+    @PostMapping("/crear-cita")
     public ResponseEntity<MensajeDTO<String>> crearCita(@RequestBody CrearCitaDTO crearCitaDTO) throws Exception {
         String idCita = citasService.crearCita(crearCitaDTO);
         return ResponseEntity.ok().body(new MensajeDTO<>(false, "Cita creada con éxito. ID: " + idCita));
@@ -218,7 +218,7 @@ public class UsuarioControlador {
      * @return Mensaje de confirmación con el ID de la cita reprogramada
      * @throws Exception Si la cita no existe o hay conflictos con el nuevo horario
      */
-    @PutMapping("/citas/reprogramar")
+    @PutMapping("/reprogramar-cita")
     public ResponseEntity<MensajeDTO<String>> reprogramarCita(@RequestBody ReprogramarCitaDTO reprogramarCitaDTO) throws Exception {
         String id = citasService.reprogramarCita(reprogramarCitaDTO);
         return ResponseEntity.ok().body(new MensajeDTO<>(false, "Cita reprogramada correctamente. ID: " + id));
@@ -241,11 +241,24 @@ public class UsuarioControlador {
      * @param clienteId Identificador único del cliente
      * @return Lista de citas del cliente
      */
-    @GetMapping("/citas/mis-citas/{clienteId}")
+    @GetMapping("/obtener-citas/{clienteId}")
     public ResponseEntity<MensajeDTO<List<InformacionCitaDTO>>> obtenerMisCitas(@PathVariable String clienteId) {
         List<InformacionCitaDTO> citas = citasService.obtenerCitasPorClienteId(clienteId);
         return ResponseEntity.ok().body(new MensajeDTO<>(false, citas));
     }
+
+    /**
+     * Obtiene las citas canceladas y completadas de un cliente específico
+     * @param clienteId Identificador único del cliente
+     * @return Lista de citas canceladas o completadas del cliente
+     */
+    @GetMapping("/obtener-citas-canceladas-completadas/{clienteId}")
+    public ResponseEntity<MensajeDTO<List<InformacionCitaDTO>>> obtenerCitasCanceladasYCompletadas(
+            @PathVariable String clienteId) {
+        List<InformacionCitaDTO> citas = citasService.obtenerCitasCanceladasYCompletadasPorClienteId(clienteId);
+        return ResponseEntity.ok().body(new MensajeDTO<>(false, citas));
+    }
+
 
     /**
      * Obtiene información detallada de una cita específica

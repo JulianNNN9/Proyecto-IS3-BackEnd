@@ -14,6 +14,7 @@ package co.edu.uniquindio.laos.services.implementation;
 
     import java.time.LocalDateTime;
     import java.time.format.DateTimeFormatter;
+    import java.util.Arrays;
     import java.util.List;
     import java.util.Optional;
     import java.util.stream.Collectors;
@@ -42,6 +43,7 @@ package co.edu.uniquindio.laos.services.implementation;
          */
         @Override
         public String crearCita(CrearCitaDTO crearCitaDTO) throws Exception {
+
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             LocalDateTime newFechaHora = LocalDateTime.parse(crearCitaDTO.fechaHora(), formatter);
 
@@ -122,7 +124,22 @@ package co.edu.uniquindio.laos.services.implementation;
          */
         @Override
         public List<InformacionCitaDTO> obtenerCitasPorClienteId(String clienteId) {
-            List<Cita> citas = citaRepo.findByUsuarioId(clienteId);
+            List<String> estadosPermitidos = Arrays.asList("CONFIRMADA", "REPROGRAMADA");
+            List<Cita> citas = citaRepo.findByUsuarioIdAndEstadoIn(clienteId, estadosPermitidos);
+            return citas.stream()
+                    .map(this::convertirCitaADTO)
+                    .collect(Collectors.toList());
+        }
+
+        /**
+         * Recupera las citas canceladas y completadas de un cliente específico
+         * @param clienteId Identificador único del cliente
+         * @return Lista de citas canceladas o completadas del cliente
+         */
+        @Override
+        public List<InformacionCitaDTO> obtenerCitasCanceladasYCompletadasPorClienteId(String clienteId) {
+            List<String> estados = Arrays.asList("CANCELADA", "COMPLETADA");
+            List<Cita> citas = citaRepo.findByUsuarioIdAndEstadoIn(clienteId, estados);
             return citas.stream()
                     .map(this::convertirCitaADTO)
                     .collect(Collectors.toList());
@@ -183,6 +200,7 @@ package co.edu.uniquindio.laos.services.implementation;
          */
         private InformacionCitaDTO convertirCitaADTO(Cita cita) {
             return new InformacionCitaDTO(
+                    cita.getId(),
                     cita.getUsuarioId(),
                     cita.getEstilistaId(),
                     cita.getServicioId(),

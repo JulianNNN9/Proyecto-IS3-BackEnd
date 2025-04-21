@@ -12,6 +12,8 @@ public interface CitasService {
 
     String cancelarCita(String idCita) throws Exception;
 
+    List<InformacionCitaDTO> obtenerCitasCanceladasYCompletadasPorClienteId(String clienteId);
+
     String reprogramarCita(ReprogramarCitaDTO reprogramarCitaDTO) throws Exception;
 
     List<InformacionCitaDTO> obtenerCitasPorClienteId(String clienteId);

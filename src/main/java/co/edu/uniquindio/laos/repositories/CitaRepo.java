@@ -15,6 +15,8 @@ public interface CitaRepo extends MongoRepository<Cita, String> {
     // Find all appointments by client id
     List<Cita> findByUsuarioId(String clienteId);
 
+    List<Cita> findByUsuarioIdAndEstadoIn(String clienteId, List<String> estados);
+
     // Find all appointments by stylist id
     List<Cita> findByEstilistaId(String estilistaId);
 
