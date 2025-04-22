@@ -1,6 +1,7 @@
 package co.edu.uniquindio.laos.controllers;
 
 import co.edu.uniquindio.laos.dto.MensajeDTO;
+import co.edu.uniquindio.laos.dto.cita.CalendarioCitasDTO;
 import co.edu.uniquindio.laos.dto.cita.CrearCitaDTO;
 import co.edu.uniquindio.laos.dto.cita.InformacionCitaDTO;
 import co.edu.uniquindio.laos.dto.cita.ReprogramarCitaDTO;
@@ -282,5 +283,11 @@ public class UsuarioControlador {
     public ResponseEntity<MensajeDTO<InformacionCitaDTO>> consultarCita(@PathVariable String citaId) throws Exception {
         InformacionCitaDTO cita = citasService.obtenerCitaPorId(citaId);
         return ResponseEntity.ok().body(new MensajeDTO<>(false, cita));
+    }
+
+    @GetMapping("/obtener-calendario-citas")
+    public ResponseEntity<MensajeDTO<List<CalendarioCitasDTO>>> obtenerCitasConfirmadasYReprogramadas() {
+        List<CalendarioCitasDTO> citas = citasService.obtenerCitasConfirmadasYReprogramadas();
+        return ResponseEntity.ok().body(new MensajeDTO<>(false, citas));
     }
 }

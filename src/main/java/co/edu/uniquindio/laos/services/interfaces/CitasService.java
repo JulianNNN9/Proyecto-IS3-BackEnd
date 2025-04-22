@@ -1,5 +1,6 @@
 package co.edu.uniquindio.laos.services.interfaces;
 
+import co.edu.uniquindio.laos.dto.cita.CalendarioCitasDTO;
 import co.edu.uniquindio.laos.dto.cita.CrearCitaDTO;
 import co.edu.uniquindio.laos.dto.cita.InformacionCitaDTO;
 import co.edu.uniquindio.laos.dto.cita.ReprogramarCitaDTO;
@@ -24,5 +25,5 @@ public interface CitasService {
 
     List<InformacionCitaDTO> obtenerCitasPorEstado(String estado);
 
-
+    List<CalendarioCitasDTO> obtenerCitasConfirmadasYReprogramadas();
 }

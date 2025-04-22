@@ -9,7 +9,9 @@ public record InformacionCitaDTO(
         String citaId,
         String usuarioId,
         String estilistaId,
+        String estilistaNombre,
         String servicioId,
+        String servicioNombre,
         LocalDateTime fechaHora,
         EstadoCita estado
 

@@ -3,14 +3,21 @@ package co.edu.uniquindio.laos.services.implementation;
     import co.edu.uniquindio.laos.dto.cita.CrearCitaDTO;
     import co.edu.uniquindio.laos.dto.cita.InformacionCitaDTO;
     import co.edu.uniquindio.laos.dto.cita.ReprogramarCitaDTO;
+    import co.edu.uniquindio.laos.dto.cita.CalendarioCitasDTO;
     import co.edu.uniquindio.laos.exceptions.HorarioYEstilistaOcupadoException;
     import co.edu.uniquindio.laos.exceptions.RecursoNoEncontradoException;
     import co.edu.uniquindio.laos.model.Cita;
     import co.edu.uniquindio.laos.model.EstadoCita;
+    import co.edu.uniquindio.laos.model.Estilista;
+    import co.edu.uniquindio.laos.model.Servicio;
     import co.edu.uniquindio.laos.repositories.CitaRepo;
+    import co.edu.uniquindio.laos.repositories.ServiciosRepo;
+    import co.edu.uniquindio.laos.repositories.EstilistaRepo;
     import co.edu.uniquindio.laos.services.interfaces.CitasService;
+    import lombok.RequiredArgsConstructor;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.stereotype.Service;
+    import org.springframework.transaction.annotation.Transactional;
 
     import java.time.LocalDateTime;
     import java.time.format.DateTimeFormatter;
@@ -27,6 +34,8 @@ package co.edu.uniquindio.laos.services.implementation;
      * así como de consultar la información de citas según diferentes criterios.
      */
     @Service
+    @Transactional
+    @RequiredArgsConstructor
     public class CitasServiceImple implements CitasService {
 
         /**
@@ -34,6 +43,12 @@ package co.edu.uniquindio.laos.services.implementation;
          */
         @Autowired
         private CitaRepo citaRepo;
+        @Autowired
+        private EstilistaRepo estilistaRepository;
+        @Autowired
+        private ServiciosRepo servicioRepository;
+
+
 
         /**
          * Crea una nueva cita en el sistema verificando disponibilidad
@@ -199,13 +214,52 @@ package co.edu.uniquindio.laos.services.implementation;
          * @return Objeto DTO con la información relevante de la cita
          */
         private InformacionCitaDTO convertirCitaADTO(Cita cita) {
+
+            String nombreEstilista = "Vacio";
+
+            // Obtener nombre del estilista
+            Optional<Estilista> estilistaOptional = estilistaRepository.findById(cita.getEstilistaId());
+
+            if (estilistaOptional.isPresent()){
+                nombreEstilista = estilistaOptional.get().getNombre();
+            }
+
+            String nombreServicio = "Vacio";
+            // Obtener nombre del servicio
+            Optional<Servicio> servicioOptional = servicioRepository.findById(cita.getServicioId());
+
+            if (servicioOptional.isPresent()){
+                nombreServicio = servicioOptional.get().getNombre();
+            }
+
             return new InformacionCitaDTO(
                     cita.getId(),
                     cita.getUsuarioId(),
                     cita.getEstilistaId(),
+                    nombreEstilista,
                     cita.getServicioId(),
+                    nombreServicio,
                     cita.getFechaHora(),
                     cita.getEstado()
             );
         }
+
+        @Override
+        public List<CalendarioCitasDTO> obtenerCitasConfirmadasYReprogramadas() {
+            List<Cita> citas = citaRepo.findByEstadoIn(List.of("CONFIRMADA", "REPROGRAMADA"));
+
+            return citas.stream()
+                    .map(this::convertirACalendarioCitasDTO)
+                    .toList();
+        }
+
+        public CalendarioCitasDTO convertirACalendarioCitasDTO(Cita cita) {
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+
+            String fechaHoraInicio = cita.getFechaHora().format(formatter);
+            String fechaHoraFin = cita.getFechaHora().plusHours(1).format(formatter); // Suma 1 hora
+
+            return new CalendarioCitasDTO(fechaHoraInicio, fechaHoraFin);
+        }
+
     }
