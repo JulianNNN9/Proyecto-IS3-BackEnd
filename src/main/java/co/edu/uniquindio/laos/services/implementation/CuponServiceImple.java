@@ -21,7 +21,6 @@ package co.edu.uniquindio.laos.services.implementation;
         /**
          * Implementación del servicio de cupones que maneja la lógica de negocio
          * para la gestión de cupones de descuento en el sistema.
-         *
          * Esta clase se encarga de crear, editar y eliminar cupones, así como
          * consultar información de cupones según diferentes criterios.
          */
@@ -53,9 +52,8 @@ package co.edu.uniquindio.laos.services.implementation;
                         .codigo(TextUtils.normalizarTexto(crearCuponDTO.codigo()))
                         .nombre(TextUtils.normalizarTexto(crearCuponDTO.nombre()))
                         .porcentajeDescuento(crearCuponDTO.porcentajeDescuento())
-                        .estadoCupon(crearCuponDTO.estadoCupon())
+                        .estadoCupon(EstadoCupon.ACTIVO)
                         .fechaVencimiento(crearCuponDTO.fechaVencimiento())
-                        .usuario(crearCuponDTO.usuario())
                         .build();
 
                 cuponRepo.save(cupon);

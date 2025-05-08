@@ -4,15 +4,15 @@ package co.edu.uniquindio.laos.controllers;
     import co.edu.uniquindio.laos.dto.cita.InformacionCitaDTO;
     import co.edu.uniquindio.laos.dto.cuenta.EditarUsuarioDTO;
     import co.edu.uniquindio.laos.dto.cuenta.InformacionUsuarioDTO;
+    import co.edu.uniquindio.laos.dto.cupon.CrearCuponDTO;
+    import co.edu.uniquindio.laos.dto.cupon.CuponDTO;
+    import co.edu.uniquindio.laos.dto.cupon.EditarCuponDTO;
     import co.edu.uniquindio.laos.dto.sugerencias.SugerenciaDTO;
     import co.edu.uniquindio.laos.exceptions.RecursoNoEncontradoException;
-    import co.edu.uniquindio.laos.services.interfaces.CitasService;
-    import co.edu.uniquindio.laos.services.interfaces.SugerenciaService;
+    import co.edu.uniquindio.laos.services.interfaces.*;
     import co.edu.uniquindio.laos.dto.queja.QuejaDTO;
     import co.edu.uniquindio.laos.model.EstadoQueja;
     import co.edu.uniquindio.laos.model.Queja;
-    import co.edu.uniquindio.laos.services.interfaces.QuejaService;
-    import co.edu.uniquindio.laos.services.interfaces.UsuarioService;
     import io.swagger.v3.oas.annotations.security.SecurityRequirement;
     import jakarta.validation.Valid;
     import lombok.RequiredArgsConstructor;
@@ -56,6 +56,8 @@ package co.edu.uniquindio.laos.controllers;
          * Servicio para la gestion de usuarios
          */
         private final UsuarioService usuarioService;
+
+        private final CuponService cuponService;
 
         /**
          * Obtiene todas las sugerencias registradas en el sistema
@@ -255,5 +257,25 @@ package co.edu.uniquindio.laos.controllers;
         public ResponseEntity<MensajeDTO<String>> editarUsuarioAdmin(@Valid @RequestBody EditarUsuarioDTO editarUsuarioDTO)throws Exception{
             usuarioService.editarUsuario(editarUsuarioDTO);
             return ResponseEntity.ok().body( new MensajeDTO<>(false, "Cliente actualizado correctamente") );
+        }
+
+        @PostMapping ("/cupon/crear-cupon")
+        public ResponseEntity<MensajeDTO<String>> crearCupon(@Valid @RequestBody CrearCuponDTO crearCuponDTO) throws Exception {
+            return ResponseEntity.ok().body(new MensajeDTO<>(false, cuponService.crearCupon(crearCuponDTO)));
+        }
+
+        @PutMapping ("/cupon/editar-cupon")
+        public ResponseEntity<MensajeDTO<String>> editarCupon(@Valid @RequestBody EditarCuponDTO editarCuponDTO) throws Exception {
+            return ResponseEntity.ok().body(new MensajeDTO<>(false, cuponService.editarCupon(editarCuponDTO)));
+        }
+
+        @GetMapping ("/cupon/eliminar-cupon/{idCupon}")
+        public ResponseEntity<MensajeDTO<String>> eliminarCupon(@PathVariable String idCupon) throws Exception {
+            return ResponseEntity.ok().body(new MensajeDTO<>(false, cuponService.eliminarCupon(idCupon)));
+        }
+
+        @GetMapping ("/cupon/listar-cupones")
+        public ResponseEntity<MensajeDTO<List<CuponDTO>>> listarCupones() throws Exception {
+            return ResponseEntity.ok().body(new MensajeDTO<>(false, cuponService.listarCupones()));
         }
     }

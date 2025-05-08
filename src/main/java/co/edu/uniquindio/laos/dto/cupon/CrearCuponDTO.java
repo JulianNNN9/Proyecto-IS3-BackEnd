@@ -21,12 +21,8 @@ public record CrearCuponDTO (
         @DecimalMax(value = "100.0", message = "El porcentaje de descuento no puede ser mayor a 100")
         Double porcentajeDescuento,
 
-        @NotNull(message = "El estado del cupón es obligatorio")
-        EstadoCupon estadoCupon,
-
         @NotNull(message = "La fecha de vencimiento es obligatoria")
         @Future(message = "La fecha de vencimiento debe estar en el futuro")
-        LocalDate fechaVencimiento,
-        Usuario usuario
+        LocalDate fechaVencimiento
 ){
 }
