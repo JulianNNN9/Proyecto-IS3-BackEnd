@@ -5,6 +5,7 @@ import co.edu.uniquindio.laos.model.EstadoCupon;
 import java.time.LocalDate;
 
 public record CuponDTO(
+        String id,
         String codigo,
         String nombre,
         Double porcentajeDescuento,

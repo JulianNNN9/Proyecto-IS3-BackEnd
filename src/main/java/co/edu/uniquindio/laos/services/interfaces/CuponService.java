@@ -16,7 +16,9 @@ public interface CuponService {
 
     String eliminarCupon(String idCupon)throws RecursoNoEncontradoException;
 
-    Cupon obtenerCuponPorCodigo(String id) throws RecursoNoEncontradoException;
+    CuponDTO obtenerCuponPorIdParaAdmin(String id) throws RecursoNoEncontradoException;
+
+    Cupon obtenerCuponPorCodigo(String codigo) throws RecursoNoEncontradoException;
 
     List<Cupon> obtenerListaCuponPorIdUsuario(String idUsuario);
 

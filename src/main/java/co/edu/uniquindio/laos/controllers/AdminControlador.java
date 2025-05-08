@@ -278,4 +278,9 @@ package co.edu.uniquindio.laos.controllers;
         public ResponseEntity<MensajeDTO<List<CuponDTO>>> listarCupones() throws Exception {
             return ResponseEntity.ok().body(new MensajeDTO<>(false, cuponService.listarCupones()));
         }
+
+        @GetMapping ("/cupon/obtenerInformacionCupon/{idCupon}")
+        public ResponseEntity<MensajeDTO<CuponDTO>> obtenerInformacionCupon(@PathVariable String idCupon) throws Exception {
+            return ResponseEntity.ok().body(new MensajeDTO<>(false, cuponService.obtenerCuponPorIdParaAdmin(idCupon)));
+        }
     }

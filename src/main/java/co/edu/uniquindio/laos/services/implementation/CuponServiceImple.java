@@ -193,13 +193,54 @@ package co.edu.uniquindio.laos.services.implementation;
             }
 
             /**
+             * Recupera un cupón por su identificador único y lo convierte a formato DTO
+             * @param id Identificador único del cupón
+             * @return Objeto CuponDTO con los datos del cupón encontrado
+             * @throws RecursoNoEncontradoException Si no existe un cupón con ese ID o está eliminado
+             */
+            @Override
+            public CuponDTO obtenerCuponPorIdParaAdmin(String id) throws RecursoNoEncontradoException {
+                if (id.length() != 24) {
+                    if (id.length() < 24) {
+                        // Si es más corto, completar con ceros al final
+                        id = String.format("%-24s", id).replace(' ', '0');
+                    } else {
+                        // Si es más largo, recortar a 24 caracteres
+                        id = id.substring(0, 24);
+                    }
+                }
+                Optional<Cupon> cuponExistente = cuponRepo.findByIdAndEstadoNot(id, EstadoCupon.ELIMINADO);
+
+                if (cuponExistente.isEmpty()) {
+                    throw new RecursoNoEncontradoException("Cupón no encontrado");
+                }
+
+                Cupon cupon = cuponExistente.get();
+
+                // Mapear el objeto Cupon a CuponDTO
+                return new CuponDTO(
+                        cupon.getId(),
+                        cupon.getCodigo(),
+                        cupon.getNombre(),
+                        cupon.getPorcentajeDescuento(),
+                        cupon.getEstadoCupon(),
+                        cupon.getFechaVencimiento()
+                );
+            }
+
+            /**
              * Recupera todos los cupones del sistema y los convierte a formato DTO
+             * @return Lista de cupones en formato DTO para transferencia de datos
+             */
+            /**
+             * Recupera todos los cupones del sistema que no estén en estado "ELIMINADO" y los convierte a formato DTO
              * @return Lista de cupones en formato DTO para transferencia de datos
              */
             @Override
             public List<CuponDTO> listarCupones() {
-                return cuponRepo.findAll().stream()
+                return cuponRepo.findCuponesNoEliminados().stream()
                         .map(cupon -> new CuponDTO(
+                                cupon.getId(),
                                 cupon.getCodigo(),
                                 cupon.getNombre(),
                                 cupon.getPorcentajeDescuento(),

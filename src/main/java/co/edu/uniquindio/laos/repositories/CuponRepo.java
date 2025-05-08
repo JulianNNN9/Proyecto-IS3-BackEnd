@@ -22,4 +22,7 @@ public interface CuponRepo extends MongoRepository<Cupon, String> {
 
     @Query("{ '_id' : ObjectId(?0), 'estadoCupon' : { $ne: ?1 } }")
     Optional<Cupon> findByIdAndEstadoNot(String id, EstadoCupon estadoCupon);
+
+    @Query("{'estadoCupon': {$ne: 'ELIMINADO'}}")
+    List<Cupon> findCuponesNoEliminados();
 }
