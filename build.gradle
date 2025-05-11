@@ -2,6 +2,8 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.3.3'
     id 'io.spring.dependency-management' version '1.1.6'
+    id 'jacoco'
+    id 'org.sonarqube' version '4.4.1.3373'
 }
 
 group = 'co.edu.uniquindio'
@@ -55,10 +57,48 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
 
+}
 
+jacocoTestReport {
+    reports {
+        xml.required = true
+        html.required = true
+    }
+    afterEvaluate {
+        classDirectories.setFrom(
+                files(classDirectories.files.collect {
+                    fileTree(dir: it, exclude: [
+                            "co/edu/uniquindio/laos/dto/**",
+                            "co/edu/uniquindio/laos/config/**",
+                            "**/*Application.class"
+                    ])
+                })
+        )
+    }
+}
 
+sonarqube {
+    properties {
+        // Para SonarCloud
+        property "sonar.projectKey", System.getenv('SONAR_PROJECT_KEY') ?: "juliannnn9_laos-backend"
+        property "sonar.organization", System.getenv('SONAR_ORGANIZATION') ?: "juliannnn9"
+        property "sonar.host.url", "https://sonarcloud.io"
+
+        // Configuración común
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.java.coveragePlugin", "jacoco"
+        property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+
+        // Exclusiones (opcional)
+        property "sonar.exclusions", "src/main/java/co/edu/uniquindio/laos/dto/**"
+    }
 }
 
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+tasks.named('sonarqube').configure {
+    dependsOn test
 }
