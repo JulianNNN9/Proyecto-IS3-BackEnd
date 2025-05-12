@@ -61,11 +61,11 @@ package co.edu.uniquindio.laos.services.implementation;
                                 .build();
 
                         crearCuponDTO = new CrearCuponDTO(
+                                "123456789012345678901234",
                                 "TEST01",
-                                "Cupón de prueba",
                                 10.0,
                                 EstadoCupon.ACTIVO,
-                                LocalDate.now().plusMonths(1),
+                                LocalDate.now().plusMonths(7),
                                 usuarioEjemplo
                         );
 
