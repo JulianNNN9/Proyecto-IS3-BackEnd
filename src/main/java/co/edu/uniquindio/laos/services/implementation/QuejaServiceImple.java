@@ -48,7 +48,9 @@ package co.edu.uniquindio.laos.services.implementation;
                             .nombreEstilista(crearQuejaDTO.nombreEstilista())
                             .respuestaQueja(null)
                             .build();
-                    quejaRepo.save(queja);
+
+                    // Fix: Capture the returned entity after save
+                    queja = quejaRepo.save(queja);
                     return queja.getId();
                 }
 
